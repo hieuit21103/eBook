@@ -1,0 +1,7 @@
+# Add to .gitignore
+**/bin/
+**/obj/
+**/.vs/
+
+# Docker
+.dockerignore

@@ -1,0 +1,124 @@
+version: '3.8'
+
+services:
+  apigateway:
+    build:
+      context: ./src
+      dockerfile: ApiGateway/Dockerfile
+    container_name: ebook-apigateway
+    ports:
+      - "5000:5000"
+    environment:
+      - ASPNETCORE_URLS=http://+:5000
+      - Jwt__SecretKey=${JWT_SECRET_KEY}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - ReverseProxy__Clusters__identity__Destinations__d1__Address=http://ebook-identity:5001
+      - ReverseProxy__Clusters__document__Destinations__d1__Address=http://ebook-document:5002
+    networks:
+      - ebook-network
+
+  identity:
+    build:
+      context: ./src
+      dockerfile: Identity/Dockerfile
+    container_name: ebook-identity
+    environment:
+      - ASPNETCORE_URLS=http://+:5001
+      - ConnectionStrings__PgHost=${PG_HOST}
+      - ConnectionStrings__PgPort=${PG_PORT}
+      - ConnectionStrings__PgUsername=${PG_USERNAME}
+      - ConnectionStrings__PgPassword=${PG_PASSWORD}
+      - Redis__ConnectionString=${REDIS_CONNECTION_STRING}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - Jwt__SecretKey=${JWT_SECRET_KEY}
+      - Jwt__ExpiryMinutes=${JWT_EXPIRY_MINUTES}
+      - Jwt__RefreshTokenExpiryDays=${REFRESH_TOKEN_EXPIRY_DAYS}
+      - RabbitMQ__Host=ebook-rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USERNAME}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - ebook-network
+    restart: unless-stopped
+
+  document:
+    build:
+      context: ./src
+      dockerfile: Document/Dockerfile
+    container_name: ebook-document
+    environment:
+      - ASPNETCORE_URLS=http://+:5002
+      - ConnectionStrings__PgHost=${PG_HOST}
+      - ConnectionStrings__PgPort=${PG_PORT}
+      - ConnectionStrings__PgUsername=${PG_USERNAME}
+      - ConnectionStrings__PgPassword=${PG_PASSWORD}
+      - RabbitMQ__Host=ebook-rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USERNAME}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+      - Jwt__SecretKey=${JWT_SECRET_KEY}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - FileStorage__GrpcUrl=http://ebook-filestorage:5003
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      identity:
+        condition: service_started
+    networks:
+      - ebook-network
+
+  filestorage:
+    build:
+      context: ./src
+      dockerfile: FileStorage/Dockerfile
+    container_name: ebook-filestorage
+    environment:
+      - ASPNETCORE_URLS=http://+:5003
+      - ConnectionStrings__PgHost=${PG_HOST}
+      - ConnectionStrings__PgPort=${PG_PORT}
+      - ConnectionStrings__PgUsername=${PG_USERNAME}
+      - ConnectionStrings__PgPassword=${PG_PASSWORD}
+      - Jwt__SecretKey=${JWT_SECRET_KEY}
+      - Jwt__Issuer=${JWT_ISSUER}
+      - Jwt__Audience=${JWT_AUDIENCE}
+      - S3__Endpoint=${S3_ENDPOINT}
+      - S3__AccessKey=${S3_ACCESS_KEY}
+      - S3__SecretKey=${S3_SECRET_KEY}
+      - S3__BucketName=${S3_BUCKET_NAME}
+      - S3__PresignExpiration=${S3_PRESIGN_EXPIRATION_MINUTES}
+      - RabbitMQ__Host=ebook-rabbitmq
+      - RabbitMQ__Username=${RABBITMQ_USERNAME}
+      - RabbitMQ__Password=${RABBITMQ_PASSWORD}
+    depends_on:
+      rabbitmq:
+        condition: service_healthy
+      identity:
+        condition: service_started
+    networks:
+      - ebook-network
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: ebook-rabbitmq
+    environment:
+      - RABBITMQ_DEFAULT_USER=${RABBITMQ_DEFAULT_USER}
+      - RABBITMQ_DEFAULT_PASS=${RABBITMQ_DEFAULT_PASS}
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmq-diagnostics", "ping"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+    networks:
+      - ebook-network
+
+networks:
+  ebook-network:
+    driver: bridge
+
