@@ -1,0 +1,1814 @@
+{
+  "info": {
+    "_postman_id": "ebook-api-collection",
+    "name": "eBook API",
+    "description": "Comprehensive API collection for the eBook microservices application.\n\nThis collection includes endpoints for:\n\n- **Authentication**: User registration, login, logout, token refresh\n    \n- **Users**: User management (Admin only)\n    \n- **Documents**: Document CRUD operations\n    \n- **Pages**: Page management within documents\n    \n- **Categories**: Category management (Admin only)\n    \n- **Bookmarks**: User bookmark management\n    \n\n## Authentication\n\nMost endpoints require JWT Bearer token authentication. Use the `/api/auth/login` endpoint to obtain an access token.\n\n## Base URL\n\nSet the `{{baseUrl}}` variable to your API gateway URL.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "id": "52c57dd0-b045-40fd-9335-eacf15227dae",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"user2@example.com\",\n  \"username\": \"newuser\",\n  \"password\": \"SecurePassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/auth/register",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "auth",
+                "register"
+              ]
+            },
+            "description": "Register a new user account. Returns access token and user details on success."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "id": "0ca4d38d-e47d-4c35-b96f-ac174cb428bc",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"usernameOrEmail\": \"admin\",\n  \"password\": \"Password1!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/auth/login",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "auth",
+                "login"
+              ]
+            },
+            "description": "Authenticate user with username/email and password. Returns access token and sets refresh token in HTTP-only cookie."
+          },
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "id": "b4679a1f-94bc-4341-81a1-e9ab281ad6ec",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{accessToken}}"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/auth/refresh",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "auth",
+                "refresh"
+              ]
+            },
+            "description": "Refresh the access token using the refresh token stored in cookies. Requires the current access token in Authorization header."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "id": "50c274f9-e097-4a1e-b9bf-e585ce8a9a73",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/auth/logout",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "auth",
+                "logout"
+              ]
+            },
+            "description": "Logout the current user and invalidate the refresh token."
+          },
+          "response": []
+        },
+        {
+          "name": "Revoke All Tokens",
+          "id": "8f9ad577-65ab-4213-be5d-c3913fcdf2c5",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/auth/revoke-all-tokens",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "auth",
+                "revoke-all-tokens"
+              ]
+            },
+            "description": "Revoke all active tokens for the current user. Useful for security purposes."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "id": "635e1358-2314-4104-bc9f-977f1c4fee97",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/auth/me",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "auth",
+                "me"
+              ]
+            },
+            "description": "Get the current authenticated user's information from the JWT token."
+          },
+          "response": []
+        }
+      ],
+      "id": "81bb51f5-d162-4df9-904d-761d7fdd60b1",
+      "description": "Authentication endpoints for user registration, login, logout, and token management."
+    },
+    {
+      "name": "Users",
+      "item": [
+        {
+          "name": "Get All Users",
+          "id": "5b258a81-48fd-40a4-8faf-73f0986ceae1",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/users?pageNumber=1&pageSize=10&sortBy=CreatedAt&isDescending=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "users"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "uuid": "70e8dd4b-e223-4b72-963a-71506c5cb23c"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "uuid": "88c20cf5-1277-4676-b7af-0beb0370b397"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "CreatedAt",
+                  "uuid": "6c181a25-fbd3-4c21-8846-fdd9c71578fe"
+                },
+                {
+                  "key": "isDescending",
+                  "value": "true",
+                  "uuid": "f078c1d9-401f-4ba7-b4c2-0fd584e2fe84"
+                },
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "username",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "email",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "role",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "isActive",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all users with pagination and filters. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User by ID",
+          "id": "3a0c693b-03ee-4985-9838-a62d039b9ac0",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}",
+                  "description": "User GUID"
+                }
+              ]
+            },
+            "description": "Get a specific user by their ID. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Create User",
+          "id": "4d75533c-a061-4c02-97f9-c44c5879fd20",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"newuser@example.com\",\n  \"username\": \"newuser\",\n  \"password\": \"SecurePassword123!\",\n  \"role\": 0\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/users",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "users"
+              ]
+            },
+            "description": "Create a new user. Admin only.\n\nRole values:\n- 0: User\n- 1: Admin"
+          },
+          "response": []
+        },
+        {
+          "name": "Update User",
+          "id": "938a999f-aae2-4547-a012-289788afbe7c",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"updated@example.com\",\n  \"username\": \"updateduser\",\n  \"role\": 0,\n  \"isActive\": true,\n  \"password\": \"NewPassword123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}",
+                  "description": "User GUID"
+                }
+              ]
+            },
+            "description": "Update an existing user. Admin only. All fields are optional."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete User",
+          "id": "5ace0f32-76af-48a2-85be-bc90cc1f34bb",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/identity/api/users/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "identity",
+                "api",
+                "users",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{userId}}",
+                  "description": "User GUID"
+                }
+              ]
+            },
+            "description": "Delete a user. Admin only."
+          },
+          "response": []
+        }
+      ],
+      "id": "4bf2e03b-0bf8-4e44-95c2-10789427d83b",
+      "description": "User management endpoints. Requires Admin role."
+    },
+    {
+      "name": "Documents",
+      "item": [
+        {
+          "name": "Get All Documents",
+          "id": "d2a17873-efda-4e36-a71c-86092751c7c6",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/document?pageNumber=1&pageSize=10&sortBy=CreatedAt&isDescending=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "document"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "uuid": "3749ad4d-8079-4372-b4c0-9e6538c8f929"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "uuid": "a4773a1f-a9de-4721-b7a8-cd0336bfd64d"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "CreatedAt",
+                  "uuid": "17804ae6-17a5-4914-9e38-ee8c88d54a8d"
+                },
+                {
+                  "key": "isDescending",
+                  "value": "true",
+                  "uuid": "7272225b-5c39-4f27-96b6-104d3064f1d7"
+                },
+                {
+                  "key": "userId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "title",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "topic",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "categories",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "createdAfter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "createdBefore",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all documents with pagination and filters."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Document by ID",
+          "id": "552713f7-6b68-46a0-98d5-8946d480217a",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/document/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "document",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{documentId}}",
+                  "description": "Document GUID"
+                }
+              ]
+            },
+            "description": "Get a specific document by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Document with Details",
+          "id": "4d5ac970-c890-4edc-8b6f-17aad4171450",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/document/:id/details",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "document",
+                ":id",
+                "details"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{documentId}}",
+                  "description": "Document GUID"
+                }
+              ]
+            },
+            "description": "Get a document with full details including categories and pages."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Document",
+          "id": "7ae7abf6-fc73-4aea-8d93-0e691eda7b2b",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"My New Document\",\n  \"topic\": \"Technology\",\n  \"description\": \"A comprehensive guide to modern technology\",\n  \"categoryIds\": []\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/document",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "document"
+              ]
+            },
+            "description": "Create a new document. The user ID is extracted from the JWT token."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Document",
+          "id": "c16b9ad5-2f00-4e3a-83d8-7a714e78277b",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Document Title\",\n  \"topic\": \"Science\",\n  \"description\": \"Updated description\",\n  \"categoryIds\": [\"9c1741d6-5e23-46fb-8297-4037b901b7fe\"]\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/document/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "document",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{documentId}}",
+                  "description": "Document GUID"
+                }
+              ]
+            },
+            "description": "Update an existing document. Only the owner or admin can update."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Document",
+          "id": "cc478187-4543-4f71-b348-54c4c1d5d06f",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/document/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "document",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{documentId}}",
+                  "description": "Document GUID"
+                }
+              ]
+            },
+            "description": "Soft delete a document. Only the owner or admin can delete."
+          },
+          "response": []
+        },
+        {
+          "name": "Check Document Exists",
+          "id": "94bcb7cb-67a9-4d50-a19b-4ea4dc31e076",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/document/exists/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "document",
+                "exists",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{documentId}}",
+                  "description": "Document GUID"
+                }
+              ]
+            },
+            "description": "Check if a document exists by ID."
+          },
+          "response": []
+        }
+      ],
+      "id": "2f1097f7-0d97-4dd3-af94-636e663279ee",
+      "description": "Document management endpoints for creating, reading, updating, and deleting documents."
+    },
+    {
+      "name": "Pages",
+      "item": [
+        {
+          "name": "Get All Pages",
+          "id": "5f0db3e8-d7dc-4ab0-b44d-4785952728ab",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/page?pageNumber=1&pageSize=10&sortBy=PageNumber&isDescending=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "page"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "uuid": "4261fb08-59e9-4fbb-99a6-98089b24b33d"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "uuid": "554dc122-0ef6-4bd8-adbe-d7b4e4ac5aa8"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "PageNumber",
+                  "uuid": "aa31cf86-f4b6-4663-b026-cb6859a65593"
+                },
+                {
+                  "key": "isDescending",
+                  "value": "false",
+                  "uuid": "7e06f330-f035-4ef8-96fe-e21aa511b8ab"
+                },
+                {
+                  "key": "documentId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all pages with pagination and filters."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Page by ID",
+          "id": "7453c36b-0e4b-44b5-8155-b8a8747f0ee3",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/page/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "page",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{pageId}}",
+                  "description": "Page GUID"
+                }
+              ]
+            },
+            "description": "Get a specific page by ID."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Page by Document and Page Number",
+          "id": "801afc41-9da9-4b89-a594-f0e7c5a2a695",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/page/document/:documentId/page/:pageNumber",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "page",
+                "document",
+                ":documentId",
+                "page",
+                ":pageNumber"
+              ],
+              "variable": [
+                {
+                  "key": "documentId",
+                  "value": "{{documentId}}",
+                  "description": "Document GUID"
+                },
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Page number (1-based)"
+                }
+              ]
+            },
+            "description": "Get a specific page by document ID and page number."
+          },
+          "response": []
+        },
+        {
+          "name": "Preview Page",
+          "id": "c682bdd6-72de-41b7-8030-22be7d71574c",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/page/document/:documentId/page/:pageNumber/preview",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "page",
+                "document",
+                ":documentId",
+                "page",
+                ":pageNumber",
+                "preview"
+              ],
+              "variable": [
+                {
+                  "key": "documentId",
+                  "value": "{{documentId}}",
+                  "description": "Document GUID"
+                },
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Page number (1-based)"
+                }
+              ]
+            },
+            "description": "Get a preview of a specific page."
+          },
+          "response": []
+        },
+        {
+          "name": "Download Page Content",
+          "id": "aec7e5aa-db8a-4aa7-84fd-79ae2c11a7f4",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/page/document/:documentId/page/:pageNumber/download",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "page",
+                "document",
+                ":documentId",
+                "page",
+                ":pageNumber",
+                "download"
+              ],
+              "variable": [
+                {
+                  "key": "documentId",
+                  "value": "{{documentId}}",
+                  "description": "Document GUID"
+                },
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "description": "Page number (1-based)"
+                }
+              ]
+            },
+            "description": "Download the content of a specific page as a file."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Page",
+          "id": "89882705-ddfc-45e0-bfde-815d2faf5ac4",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "DocumentId",
+                  "value": "{{documentId}}",
+                  "description": "Document GUID",
+                  "type": "text"
+                },
+                {
+                  "key": "PageNumber",
+                  "value": "1",
+                  "description": "Page number (0 for auto-assign)",
+                  "type": "text"
+                },
+                {
+                  "key": "Content",
+                  "description": "Page content file",
+                  "type": "file",
+                  "src": [
+                    "postman-cloud:///1f0dbc0a-2a80-4710-8e71-3aeb1b767ecc"
+                  ]
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/page",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "page"
+              ]
+            },
+            "description": "Create a new page with file upload. Uses multipart/form-data."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Page",
+          "id": "4bc0c3f9-e780-4b2d-aa4c-25c1d3a9852a",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "PageNumber",
+                  "value": "1",
+                  "description": "New page number",
+                  "type": "text"
+                },
+                {
+                  "key": "Content",
+                  "description": "New page content file (optional)",
+                  "type": "file",
+                  "src": [
+                    "postman-cloud:///1f0dbc0a-2a80-4710-8e71-3aeb1b767ecc"
+                  ],
+                  "disabled": true
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/page/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "page",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{pageId}}",
+                  "description": "Page GUID"
+                }
+              ]
+            },
+            "description": "Update an existing page. Uses multipart/form-data for file upload."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Page",
+          "id": "92cb5718-f387-4045-826c-e2ac6c74df65",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/page/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "page",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{pageId}}",
+                  "description": "Page GUID"
+                }
+              ]
+            },
+            "description": "Delete a page. Only the document owner or admin can delete."
+          },
+          "response": []
+        }
+      ],
+      "id": "455d7a69-54ca-4a4b-b566-eb181fc8ba5b",
+      "description": "Page management endpoints for document pages."
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Get All Categories",
+          "id": "dec4eada-2fa0-478a-a669-55beb47048d7",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/category?pageNumber=1&pageSize=10&sortBy=CreatedAt&isDescending=false",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "category"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "uuid": "ea6cd4aa-b2e6-4b91-be5f-5583cf62fddf"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "uuid": "f9653e62-6710-4d02-a6a9-edbf2ec1d6e4"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "CreatedAt",
+                  "uuid": "7a80964c-5b91-4bb6-aace-307426ce92c0"
+                },
+                {
+                  "key": "isDescending",
+                  "value": "false",
+                  "uuid": "318986ce-33dd-4d9f-a5a5-6b83199ff75a"
+                },
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "name",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "createdAfter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "createdBefore",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all categories with pagination and filters. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Category by ID",
+          "id": "f7add15c-f469-422e-a22c-a58c78032769",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/category/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "category",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}",
+                  "description": "Category GUID"
+                }
+              ]
+            },
+            "description": "Get a specific category by ID. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Category",
+          "id": "4f7c2df3-b76d-483e-b2aa-519d984d6d37",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Technology\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/category",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "category"
+              ]
+            },
+            "description": "Create a new category. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Category",
+          "id": "81c2305e-49b0-45f9-a348-ce52a48fec74",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Updated Category Name\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/category/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "category",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}",
+                  "description": "Category GUID"
+                }
+              ]
+            },
+            "description": "Update an existing category. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Category",
+          "id": "a9cd407e-8ff6-4873-8091-d6d1edd4d23a",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/category/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "category",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}",
+                  "description": "Category GUID"
+                }
+              ]
+            },
+            "description": "Delete a category. Admin only."
+          },
+          "response": []
+        },
+        {
+          "name": "Check Category Exists",
+          "id": "36ef9dea-390e-40a0-b55d-dad69b47940e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/category/exists/:id",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "category",
+                "exists",
+                ":id"
+              ],
+              "variable": [
+                {
+                  "key": "id",
+                  "value": "{{categoryId}}",
+                  "description": "Category GUID"
+                }
+              ]
+            },
+            "description": "Check if a category exists by ID. Admin only."
+          },
+          "response": []
+        }
+      ],
+      "id": "8d6fd0db-8c2a-45de-8afd-921acc8e8bd3",
+      "description": "Category management endpoints. Requires Admin role."
+    },
+    {
+      "name": "Bookmarks",
+      "item": [
+        {
+          "name": "Get All Bookmarks",
+          "id": "e14876e3-74cb-4c8f-bf8c-a4c619870eb4",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/bookmark?pageNumber=1&pageSize=10&sortBy=CreatedAt&isDescending=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "bookmark"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "uuid": "e3ac133b-f56d-48be-bfe2-e020cadec6fe"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "uuid": "3bc3935f-3d6f-4893-adb4-a225528d4aa3"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "CreatedAt",
+                  "uuid": "1cb6f921-9ace-47f0-9c1d-666ffa7714e5"
+                },
+                {
+                  "key": "isDescending",
+                  "value": "true",
+                  "uuid": "b656bca9-c7b2-4c30-bc11-a1fd23cf3def"
+                },
+                {
+                  "key": "userId",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "documentTitle",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "documentTopic",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "createdAfter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "createdBefore",
+                  "value": "",
+                  "disabled": true
+                }
+              ]
+            },
+            "description": "Get all bookmarks with pagination and filters. Admin endpoint."
+          },
+          "response": []
+        },
+        {
+          "name": "Get User Bookmarks",
+          "id": "5758fa07-63b7-4da3-bccf-43dc53d44bd8",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/bookmark/user/:userId?pageNumber=1&pageSize=10&sortBy=CreatedAt&isDescending=true",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "bookmark",
+                "user",
+                ":userId"
+              ],
+              "query": [
+                {
+                  "key": "pageNumber",
+                  "value": "1",
+                  "uuid": "850f632e-213d-4835-a244-447c592c54d5"
+                },
+                {
+                  "key": "pageSize",
+                  "value": "10",
+                  "uuid": "8f2f1836-b7ef-4958-9467-1447ce9717da"
+                },
+                {
+                  "key": "sortBy",
+                  "value": "CreatedAt",
+                  "uuid": "3ed9f0db-e4ff-43b4-940e-91ba28b3bbf9"
+                },
+                {
+                  "key": "isDescending",
+                  "value": "true",
+                  "uuid": "fd30976c-cc63-4fca-bc69-4fda0beee489"
+                },
+                {
+                  "key": "keyword",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "documentTitle",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "documentTopic",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "createdAfter",
+                  "value": "",
+                  "disabled": true
+                },
+                {
+                  "key": "createdBefore",
+                  "value": "",
+                  "disabled": true
+                }
+              ],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "User GUID"
+                }
+              ]
+            },
+            "description": "Get bookmarked documents for a specific user with pagination and filters."
+          },
+          "response": []
+        },
+        {
+          "name": "Add Bookmark",
+          "id": "548ebb27-2b10-46de-93bb-8f1e4e417b6e",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pageId\": \"{{pageId}}\",\n  \"userId\": \"{{userId}}\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/bookmark",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "bookmark"
+              ]
+            },
+            "description": "Add a new bookmark for a page."
+          },
+          "response": []
+        },
+        {
+          "name": "Remove Bookmark",
+          "id": "c0c35935-f81c-4f17-b78e-e63aa9df3cb4",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/bookmark/:pageId/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "bookmark",
+                ":pageId",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "pageId",
+                  "value": "{{pageId}}",
+                  "description": "Page GUID"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "User GUID"
+                }
+              ]
+            },
+            "description": "Remove a bookmark."
+          },
+          "response": []
+        },
+        {
+          "name": "Check Bookmark",
+          "id": "689c9eea-4ca6-464f-9fd0-068fcb8046c3",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{accessToken}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{baseUrl}}/documents/api/bookmark/check/:pageId/:userId",
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "path": [
+                "documents",
+                "api",
+                "bookmark",
+                "check",
+                ":pageId",
+                ":userId"
+              ],
+              "variable": [
+                {
+                  "key": "pageId",
+                  "value": "{{pageId}}",
+                  "description": "Page GUID"
+                },
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "User GUID"
+                }
+              ]
+            },
+            "description": "Check if a page is bookmarked by a user."
+          },
+          "response": []
+        }
+      ],
+      "id": "918ff253-c42f-467a-9f4c-61164c1e5ddf",
+      "description": "Bookmark management endpoints for users to save and manage their bookmarked pages."
+    }
+  ],
+  "variable": [
+    {
+      "id": "c0dff36e-9b14-4357-b820-d130f93f7e68",
+      "key": "baseUrl",
+      "value": "http://localhost:5000",
+      "type": "string"
+    },
+    {
+      "id": "17a77ba2-914a-413e-9a02-5708ebc48c6f",
+      "key": "accessToken",
+      "value": "",
+      "type": "default"
+    },
+    {
+      "id": "bc7cb96f-feb6-4b85-9017-943f0f4b7dd9",
+      "key": "documentId",
+      "value": "",
+      "type": "default"
+    }
+  ]
+}
