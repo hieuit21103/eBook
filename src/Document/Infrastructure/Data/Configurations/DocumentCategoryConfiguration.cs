@@ -13,13 +13,14 @@ public class DocumentCategoryConfiguration : IEntityTypeConfiguration<DocumentCa
         builder.Property(dc => dc.DocumentId).IsRequired();
 
         builder.HasOne(dc => dc.Document)
-               .WithMany()
+               .WithMany(d => d.Categories)
                .HasForeignKey(dc => dc.DocumentId)
                .OnDelete(DeleteBehavior.Cascade);
 
         builder.HasOne(dc => dc.Category)
-               .WithMany()
+               .WithMany(c => c.DocumentCategories)
                .HasForeignKey(dc => dc.CategoryId)
                .OnDelete(DeleteBehavior.Cascade);
+        
     }
 }

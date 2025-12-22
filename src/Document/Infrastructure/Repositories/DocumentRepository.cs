@@ -23,6 +23,9 @@ public class DocumentRepository : Repository<Document>, IDocumentRepository
         query = query.ApplySort(filter.SortBy, filter.IsDescending);
         query = query.ApplyFilters(filter);
 
+        // Include related entities
+        query = query.Include(d => d.Categories).ThenInclude(dc => dc.Category);
+
         // Get total count before pagination
         var count = await query.CountAsync();
 

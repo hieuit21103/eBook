@@ -38,30 +38,16 @@ public class UsersController : ControllerBase
     [HttpPost]
     public async Task<IActionResult> Create(UserCreateRequest request)
     {
-        try
-        {
-            var user = await _userService.CreateAsync(request);
-            return CreatedAtAction(nameof(GetById), new { id = user.Id }, ApiResponse<UserResponse>.Ok(user, "User created successfully"));
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ApiResponse.Fail(ex.Message));
-        }
+        var user = await _userService.CreateAsync(request);
+        return CreatedAtAction(nameof(GetById), new { id = user.Id }, ApiResponse<UserResponse>.Ok(user, "User created successfully"));
     }
 
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(Guid id, UserUpdateRequest request)
     {
-        try
-        {
-            var user = await _userService.UpdateAsync(id, request);
-            if (user == null) return NotFound(ApiResponse.Fail("User not found"));
-            return Ok(ApiResponse<UserResponse>.Ok(user, "User updated successfully"));
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ApiResponse.Fail(ex.Message));
-        }
+        var user = await _userService.UpdateAsync(id, request);
+        if (user == null) return NotFound(ApiResponse.Fail("User not found"));
+        return Ok(ApiResponse<UserResponse>.Ok(user, "User updated successfully"));
     }
 
     [HttpDelete("{id}")]

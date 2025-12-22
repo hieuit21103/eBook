@@ -85,7 +85,7 @@ public class DocumentService : IDocumentService
             Title = request.Title,
             Topic = request.Topic,
             Description = request.Description,
-            TotalPages = request.TotalPages,
+            TotalPages = 0,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
             IsDeleted = false
@@ -137,7 +137,6 @@ public class DocumentService : IDocumentService
         document.Title = request.Title;
         document.Topic = request.Topic;
         document.Description = request.Description;
-        document.TotalPages = request.TotalPages;
         document.UpdatedAt = DateTime.UtcNow;
 
         await _documentRepository.UpdateAsync(document);
@@ -221,7 +220,6 @@ public class DocumentService : IDocumentService
             CreatedAt = document.CreatedAt,
             UpdatedAt = document.UpdatedAt,
             Categories = new List<string>(),
-            PageCount = 0
         };
     }
 
@@ -238,7 +236,6 @@ public class DocumentService : IDocumentService
             CreatedAt = document.CreatedAt,
             UpdatedAt = document.UpdatedAt,
             Categories = document.Categories?.Select(dc => dc.Category?.Name ?? "Unknown").ToList() ?? new List<string>(),
-            PageCount = document.Pages?.Count ?? 0
         };
     }
 }

@@ -5,6 +5,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.WebUtilities;
 
 namespace Infrastructure.Services;
 
@@ -50,7 +51,10 @@ public class TokenService : ITokenService
 
     public string GenerateRefreshToken(Guid userId)
     {
-        return Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
+        var randomNumber = new byte[32];
+        using var rng = RandomNumberGenerator.Create();
+        rng.GetBytes(randomNumber);
+        return WebEncoders.Base64UrlEncode(randomNumber);
     }
 
     public bool ValidateAccessToken(string token)
@@ -116,6 +120,9 @@ public class TokenService : ITokenService
             value,
             TimeSpan.FromDays(_refreshTokenExpiryDays)
         );
+
+        await _database.SetAddAsync($"user_rt:{userId}", jti);
+        await _database.KeyExpireAsync($"user_rt:{userId}", TimeSpan.FromDays(_refreshTokenExpiryDays));
     }
 
     public async Task<(Guid userId, string accessToken, string refreshToken)?> RefreshAsync(
@@ -140,22 +147,28 @@ public class TokenService : ITokenService
         return (userId.Value, newAccessToken, newRefreshToken);
     }
 
-    public async Task DeleteRefreshTokenAsync(string jti)
+    public async Task<bool> HasActiveTokensAsync(Guid userId)
+    {
+        return await _database.SetLengthAsync($"user_rt:{userId}") > 0;
+    }
+
+    public async Task DeleteRefreshTokenAsync(string userId, string jti)
     {
         var key = GetRefreshTokenKey(jti);
         await _database.KeyDeleteAsync(key);
+        await _database.SetRemoveAsync($"user_rt:{userId}", jti);
     }
 
     public async Task DeleteAllUserTokensAsync(Guid userId)
     {
         var pattern = $"rt:*";
         var endpoints = _database.Multiplexer.GetEndPoints();
-        
+
         foreach (var endpoint in endpoints)
         {
             var server = _database.Multiplexer.GetServer(endpoint);
             var keys = server.Keys(pattern: pattern);
-            
+
             foreach (var key in keys)
             {
                 var value = await _database.StringGetAsync(key);

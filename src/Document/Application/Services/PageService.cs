@@ -34,6 +34,7 @@ public class PageService : IPageService
         _documentRepository = documentRepository;
         _grpcClient = grpcClient;
         _notificationService = notificationService;
+        _publishEndpoint = publishEndpoint;
     }
 
     public async Task<PageResponse> GetByIdAsync(Guid id)
@@ -270,10 +271,6 @@ public class PageService : IPageService
                     OldFileId = oldFileId
                 });
             }
-        }
-        else
-        {
-            page.FileId = request.FileId;
         }
 
         page.PageNumber = request.PageNumber;

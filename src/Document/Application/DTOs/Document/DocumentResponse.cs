@@ -11,5 +11,4 @@ public class DocumentResponse
     public DateTime CreatedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public List<string> Categories { get; set; } = new();
-    public int PageCount { get; set; }
 }

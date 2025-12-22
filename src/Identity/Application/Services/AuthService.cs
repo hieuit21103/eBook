@@ -169,7 +169,7 @@ public class AuthService : IAuthService
             throw new KeyNotFoundException("User not found.");
         }
         
-        await _tokenService.DeleteRefreshTokenAsync(jti);
+        await _tokenService.DeleteRefreshTokenAsync(userId, jti);
         
         return true;
     }
@@ -185,6 +185,23 @@ public class AuthService : IAuthService
         await _tokenService.DeleteAllUserTokensAsync(userId);
 
         return true;
+    }
+
+    public async Task<bool> IsUserLoggedInAsync(string usernameOrEmail)
+    {
+        var user = await _userRepository.GetByUsernameAsync(usernameOrEmail);
+        if (user == null)
+        {
+            user = await _userRepository.GetByEmailAsync(usernameOrEmail);
+        }
+
+        if (user == null)
+        {
+            throw new KeyNotFoundException("User not found.");
+        }
+
+        var isLoggedIn = await _tokenService.HasActiveTokensAsync(user.Id);
+        return isLoggedIn;
     }
 
     private string ExtractJtiFromToken(string token)
