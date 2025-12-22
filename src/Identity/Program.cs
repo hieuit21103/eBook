@@ -1,4 +1,5 @@
 using Infrastructure.Data;
+using Infrastructure.Data.Seeders;
 using Microsoft.EntityFrameworkCore;
 using StackExchange.Redis;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -40,10 +41,10 @@ builder.Services.AddControllers();
 builder.Services.AddDbContext<ApplicationDbContext>(
     options =>
     {
-        var host = builder.Configuration["PgHost"] ?? throw new InvalidOperationException("Postgres host not found.");
-        var port = builder.Configuration["PgPort"] ?? throw new InvalidOperationException("Postgres port not found.");
-        var username = builder.Configuration["PgUsername"] ?? throw new InvalidOperationException("Postgres username not found.");
-        var password = builder.Configuration["PgPassword"] ?? throw new InvalidOperationException("Postgres password not found.");
+        var host = builder.Configuration.GetConnectionString("PgHost") ?? throw new InvalidOperationException("Postgres host not found.");
+        var port = builder.Configuration.GetConnectionString("PgPort") ?? throw new InvalidOperationException("Postgres port not found.");
+        var username = builder.Configuration.GetConnectionString("PgUsername") ?? throw new InvalidOperationException("Postgres username not found.");
+        var password = builder.Configuration.GetConnectionString("PgPassword") ?? throw new InvalidOperationException("Postgres password not found.");
         var connectionString = $"Host={host};Port={port};Database=ebook_identity;Username={username};Password={password}";
         options.UseNpgsql(connectionString);
     });
@@ -118,6 +119,13 @@ app.UseAuthorization();
 app.MapControllers();
 app.MapHealthChecks("/health");
 app.UseMiddleware<GlobalExceptionHandler>();
+
+// Seed default users
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    await DefaultUserSeeder.SeedAsync(services);
+}
 
 app.Run();
 
