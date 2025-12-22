@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.SignalR;
-using BookProject.Application.Interfaces;
-using BookProject.Infrastructure.Hubs;
-namespace BookProject.Infrastructure.Services;
+using Application.Interfaces;
+using Infrastructure.Hubs;
+namespace Infrastructure.Services;
 
 public class SignalRService : INotificationService
 {

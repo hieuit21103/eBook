@@ -11,6 +11,9 @@ using Application.Services;
 using Middleware;
 using MassTransit;
 using IntegrationEvents;
+using Infrastructure.Services;
+using Microsoft.AspNetCore.SignalR;
+using Infrastructure.Hubs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,14 +38,15 @@ builder.Services.AddSwaggerGen(
 }
 );
 builder.Services.AddControllers();
+builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<ApplicationDbContext>(
     options =>
     {
-        var host = builder.Configuration["PgHost"] ?? throw new InvalidOperationException("Postgres host not found.");
-        var port = builder.Configuration["PgPort"] ?? throw new InvalidOperationException("Postgres port not found.");
-        var username = builder.Configuration["PgUsername"] ?? throw new InvalidOperationException("Postgres username not found.");
-        var password = builder.Configuration["PgPassword"] ?? throw new InvalidOperationException("Postgres password not found.");
+        var host = builder.Configuration.GetConnectionString("PgHost") ?? throw new InvalidOperationException("Postgres host not found.");
+        var port = builder.Configuration.GetConnectionString("PgPort") ?? throw new InvalidOperationException("Postgres port not found.");
+        var username = builder.Configuration.GetConnectionString("PgUsername") ?? throw new InvalidOperationException("Postgres username not found.");
+        var password = builder.Configuration.GetConnectionString("PgPassword") ?? throw new InvalidOperationException("Postgres password not found.");
         var connectionString = $"Host={host};Port={port};Database=ebook_documents;Username={username};Password={password}";
         options.UseNpgsql(connectionString);
     });
@@ -58,6 +62,7 @@ builder.Services.AddScoped<IDocumentCategoryRepository, DocumentCategoryReposito
 builder.Services.AddScoped<IBookmarkService, BookmarkService>();
 builder.Services.AddScoped<ICategoryService, CategoryService>();
 builder.Services.AddScoped<IDocumentService, DocumentService>();
+builder.Services.AddScoped<INotificationService, SignalRService>();
 builder.Services.AddScoped<IPageService, PageService>();
 
 // GRPC Channel
@@ -124,5 +129,6 @@ app.UseAuthorization();
 app.UseMiddleware<GlobalExceptionHandler>();
 
 app.MapControllers();
+app.MapHub<DocumentHub>("/documentHub");
 app.MapHealthChecks("/health");
 app.Run();

@@ -1,4 +1,4 @@
-namespace BookProject.Application.Interfaces;
+namespace Application.Interfaces;
 
 public interface INotificationService
 {

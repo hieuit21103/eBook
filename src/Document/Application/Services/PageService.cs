@@ -8,7 +8,6 @@ using Shared.DTOs;
 using Grpc.Core;
 using FileStorage.Protos;
 using Google.Protobuf;
-using BookProject.Application.Interfaces;
 using MassTransit;  
 using Shared;
 

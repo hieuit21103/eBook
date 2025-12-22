@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.SignalR;
 
-namespace BookProject.Infrastructure.Hubs;
+namespace Infrastructure.Hubs;
 
 public class DocumentHub : Hub
 {
