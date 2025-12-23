@@ -1,6 +1,7 @@
 using System.Net;
 using System.Text.Json;
 using Application.DTOs;
+using Microsoft.AspNetCore.Authentication;
 
 namespace Middleware;
 public class GlobalExceptionHandler
@@ -34,6 +35,9 @@ public class GlobalExceptionHandler
                 case InvalidOperationException:
                 case ArgumentException:
                     response.StatusCode = (int)HttpStatusCode.BadRequest;
+                    break;
+                case AuthenticationFailureException:
+                    response.StatusCode = (int)HttpStatusCode.Unauthorized;
                     break;
                 default:
                     response.StatusCode = (int)HttpStatusCode.InternalServerError;

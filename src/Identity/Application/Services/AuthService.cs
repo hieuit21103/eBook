@@ -2,6 +2,7 @@ using Application.DTOs;
 using Application.Interfaces;
 using Domain.Entities;
 using Domain.Interfaces;
+using Microsoft.AspNetCore.Authentication;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 
@@ -23,16 +24,16 @@ public class AuthService : IAuthService
         _passwordService = passwordService;
     }
 
-    public async Task<AuthResponse?> RegisterAsync(RegisterRequest request)
+    public async Task<AuthResponse> RegisterAsync(RegisterRequest request)
     {
         if (await _userRepository.ExistsByEmailAsync(request.Email))
         {
-            return null;
+            throw new ArgumentException("Email is already in use.");
         }
 
         if (await _userRepository.ExistsByUsernameAsync(request.Username))
         {
-            return null;
+            throw new ArgumentException("Username is already in use.");
         }
 
         var passwordHash = _passwordService.HashPassword(request.Password);
@@ -71,7 +72,7 @@ public class AuthService : IAuthService
         );
     }
 
-    public async Task<AuthResponse?> LoginAsync(LoginRequest request)
+    public async Task<AuthResponse> LoginAsync(LoginRequest request)
     {
         User? user = null;
 
@@ -84,9 +85,14 @@ public class AuthService : IAuthService
             user = await _userRepository.GetByUsernameAsync(request.UsernameOrEmail);
         }
 
-        if (user == null || !_passwordService.VerifyPassword(request.Password, user.Password))
+        if (user == null)
         {
             throw new KeyNotFoundException("No user found with the provided username or email.");
+        }
+
+        if(!_passwordService.VerifyPassword(request.Password, user.Password))
+        {
+            throw new AuthenticationFailureException("Invalid password.");
         }
 
         if (!user.IsActive)
@@ -96,6 +102,8 @@ public class AuthService : IAuthService
 
         user.LastLoginAt = DateTime.UtcNow;
         await _userRepository.UpdateAsync(user);
+
+        await _tokenService.DeleteAllUserTokensAsync(user.Id);
 
         var accessToken = _tokenService.GenerateAccessToken(
             user.Id,
@@ -119,18 +127,18 @@ public class AuthService : IAuthService
         );
     }
 
-    public async Task<AuthResponse?> RefreshTokenAsync(RefreshTokenRequest request)
+    public async Task<AuthResponse> RefreshTokenAsync(RefreshTokenRequest request)
     {
         var userId = await _tokenService.ValidateRefreshTokenAsync(request.Jti, request.RefreshToken);
         if (userId == null)
         {
-            return null;
+            throw new AuthenticationFailureException("Invalid or expired refresh token.");
         }
 
         var user = await _userRepository.GetByIdAsync(userId.Value);
         if (user == null || !user.IsActive)
         {
-            return null;
+            throw new KeyNotFoundException("User not found or inactive.");
         }
 
         var newTokens = await _tokenService.RefreshAsync(
@@ -143,7 +151,7 @@ public class AuthService : IAuthService
 
         if (newTokens == null)
         {
-            return null;
+            throw new AuthenticationFailureException("Failed to refresh tokens.");
         }
 
         return new AuthResponse(
@@ -156,7 +164,7 @@ public class AuthService : IAuthService
         );
     }
 
-    public async Task<bool> LogoutAsync(string jti, string userId)
+    public async Task LogoutAsync(string jti, string userId)
     {
         if(string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(jti))
         {
@@ -170,38 +178,17 @@ public class AuthService : IAuthService
         }
         
         await _tokenService.DeleteRefreshTokenAsync(userId, jti);
-        
-        return true;
     }
 
-    public async Task<bool> RevokeAllTokensAsync(Guid userId)
+    public async Task RevokeAllTokensAsync(Guid userId)
     {
         var user = await _userRepository.GetByIdAsync(userId);
-        if (user == null)
-        {
-            return false;
-        }
-
-        await _tokenService.DeleteAllUserTokensAsync(userId);
-
-        return true;
-    }
-
-    public async Task<bool> IsUserLoggedInAsync(string usernameOrEmail)
-    {
-        var user = await _userRepository.GetByUsernameAsync(usernameOrEmail);
-        if (user == null)
-        {
-            user = await _userRepository.GetByEmailAsync(usernameOrEmail);
-        }
-
         if (user == null)
         {
             throw new KeyNotFoundException("User not found.");
         }
 
-        var isLoggedIn = await _tokenService.HasActiveTokensAsync(user.Id);
-        return isLoggedIn;
+        await _tokenService.DeleteAllUserTokensAsync(userId);
     }
 
     private string ExtractJtiFromToken(string token)

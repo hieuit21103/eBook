@@ -32,11 +32,6 @@ public class AuthController : ControllerBase
 
         var result = await _authService.RegisterAsync(request);
 
-        if (result == null)
-        {
-            return BadRequest(new { message = "Email or username already exists" });
-        }
-
         HttpContext.Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
         {
             HttpOnly = true,
@@ -45,7 +40,14 @@ public class AuthController : ControllerBase
             Expires = DateTimeOffset.UtcNow.AddDays(7)
         });
 
-        return Ok(new { accessToken = result.AccessToken, userId = result.UserId, username = result.Username, email = result.Email, role = result.Role });
+        return Ok(new 
+        { 
+            accessToken = result.AccessToken, 
+            userId = result.UserId, 
+            username = result.Username, 
+            email = result.Email, 
+            role = result.Role 
+        });
     }
 
     [HttpPost("login")]
@@ -57,18 +59,7 @@ public class AuthController : ControllerBase
             return BadRequest(ModelState);
         }
 
-        if(HttpContext.Request.Cookies.TryGetValue("refreshToken", out var existingRefreshToken))
-        {
-            if(await _authService.IsUserLoggedInAsync(request.UsernameOrEmail))
-            return BadRequest(new { message = "User is already logged in" });
-        }
-
         var result = await _authService.LoginAsync(request);
-
-        if (result == null)
-        {
-            return Unauthorized(new { message = "Invalid credentials or account is inactive" });
-        }
 
         HttpContext.Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
         {
@@ -78,7 +69,14 @@ public class AuthController : ControllerBase
             Expires = DateTimeOffset.UtcNow.AddDays(7)
         });
 
-        return Ok(new { accessToken = result.AccessToken, userId = result.UserId, username = result.Username, email = result.Email, role = result.Role });
+        return Ok(new 
+        { 
+            accessToken = result.AccessToken, 
+            userId = result.UserId, 
+            username = result.Username, 
+            email = result.Email, 
+            role = result.Role 
+        });
     }
 
     [HttpPost("refresh")]
@@ -99,11 +97,6 @@ public class AuthController : ControllerBase
 
         var request = new RefreshTokenRequest(jti, refreshToken);
         var result = await _authService.RefreshTokenAsync(request);
-
-        if (result == null)
-        {
-            return Unauthorized(new { message = "Invalid or expired refresh token" });
-        }
 
         HttpContext.Response.Cookies.Append("refreshToken", result.RefreshToken, new CookieOptions
         {
@@ -128,16 +121,14 @@ public class AuthController : ControllerBase
             return BadRequest(new { message = "Invalid token claims" });
         }
 
-        var result = await _authService.LogoutAsync(jtiClaim, userIdClaim);
-
-        if (!result)
-        {
-            return BadRequest(new { message = "Logout failed" });
-        }
+        await _authService.LogoutAsync(jtiClaim, userIdClaim);
 
         HttpContext.Response.Cookies.Delete("refreshToken");
 
-        return Ok(new { message = "Logged out successfully" });
+        return Ok(new 
+        { 
+            message = "Logged out successfully" 
+        });
     }
 
     [HttpPost("revoke-all-tokens")]
@@ -156,12 +147,7 @@ public class AuthController : ControllerBase
             return BadRequest(new { message = "Invalid user ID" });
         }
 
-        var result = await _authService.RevokeAllTokensAsync(userId);
-
-        if (!result)
-        {
-            return BadRequest(new { message = "Revoke tokens failed" });
-        }
+        await _authService.RevokeAllTokensAsync(userId);
 
         return Ok(new { message = "All tokens revoked successfully" });
     }

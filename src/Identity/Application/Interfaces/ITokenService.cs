@@ -18,7 +18,6 @@ public interface ITokenService
         string username,
         string email,
         string role);
-    Task<bool> HasActiveTokensAsync(Guid userId);
     Task DeleteRefreshTokenAsync(string userId, string jti);
     Task DeleteAllUserTokensAsync(Guid userId);
 }

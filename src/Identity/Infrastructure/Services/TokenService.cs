@@ -120,9 +120,6 @@ public class TokenService : ITokenService
             value,
             TimeSpan.FromDays(_refreshTokenExpiryDays)
         );
-
-        await _database.SetAddAsync($"user_rt:{userId}", jti);
-        await _database.KeyExpireAsync($"user_rt:{userId}", TimeSpan.FromDays(_refreshTokenExpiryDays));
     }
 
     public async Task<(Guid userId, string accessToken, string refreshToken)?> RefreshAsync(
@@ -145,11 +142,6 @@ public class TokenService : ITokenService
         await StoreRefreshTokenAsync(userId.Value, newJti, newRefreshToken);
 
         return (userId.Value, newAccessToken, newRefreshToken);
-    }
-
-    public async Task<bool> HasActiveTokensAsync(Guid userId)
-    {
-        return await _database.SetLengthAsync($"user_rt:{userId}") > 0;
     }
 
     public async Task DeleteRefreshTokenAsync(string userId, string jti)
