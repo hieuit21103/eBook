@@ -132,9 +132,11 @@ public class UserService : IUserService
             user.Role = request.Role.Value;
         }
 
+        bool statusChanged = false;
         if (request.IsActive.HasValue && user.IsActive != request.IsActive.Value)
         {
             user.IsActive = request.IsActive.Value;
+            statusChanged = true;
         }
 
         if (!string.IsNullOrEmpty(request.Password))
@@ -144,7 +146,7 @@ public class UserService : IUserService
 
         await _userRepository.UpdateAsync(user);
 
-        if (request.IsActive.HasValue && user.IsActive != request.IsActive.Value)
+        if (statusChanged)
         {
             await _publishEndpoint.Publish(new UserStatusChangedEvent
             {

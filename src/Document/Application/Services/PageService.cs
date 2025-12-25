@@ -114,6 +114,12 @@ public class PageService : IPageService
                 $"Page with ID {id} not found.");
         }
 
+        if(page.FileId == null)
+        {
+            throw new InvalidOperationException(
+                $"Page with ID {id} does not have associated file content.");
+        }
+
         using var call = _grpcClient.DownloadFile(new FileRequest
         {
             Id = page.FileId.ToString(),
@@ -158,11 +164,11 @@ public class PageService : IPageService
         var document = await _documentRepository.GetByIdAsync(request.DocumentId);
         if (document == null)
         {
-            throw new InvalidOperationException($"Document with ID {request.DocumentId} not found.");
+            throw new KeyNotFoundException($"Document with ID {request.DocumentId} not found.");
         }
         if (document.IsDeleted)
         {
-            throw new InvalidOperationException($"Document with ID {request.DocumentId} is deleted.");
+            throw new KeyNotFoundException($"Document with ID {request.DocumentId} is deleted.");
         }
 
         if (role != "Admin" && document.UserId != userId)
@@ -295,11 +301,11 @@ public class PageService : IPageService
         var document = await _documentRepository.GetByIdAsync(page.DocumentId);
         if (document == null)
         {
-            throw new InvalidOperationException($"Document with ID {page.DocumentId} not found.");
+            throw new KeyNotFoundException($"Document with ID {page.DocumentId} not found.");
         }
         if (document.IsDeleted)
         {
-            throw new InvalidOperationException($"Document with ID {page.DocumentId} is deleted.");
+            throw new KeyNotFoundException($"Document with ID {page.DocumentId} is deleted.");
         }
 
         if (role != "Admin" && document.UserId != userId)

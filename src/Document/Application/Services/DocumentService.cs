@@ -73,7 +73,7 @@ public class DocumentService : IDocumentService
             {
                 if (!await _categoryRepository.ExistsAsync(c => c.Id == categoryId))
                 {
-                    throw new InvalidOperationException($"Category with ID {categoryId} not found.");
+                    throw new KeyNotFoundException($"Category with ID {categoryId} not found.");
                 }
             }
         }
@@ -129,7 +129,7 @@ public class DocumentService : IDocumentService
             {
                 if (!await _categoryRepository.ExistsAsync(c => c.Id == categoryId))
                 {
-                    throw new InvalidOperationException($"Category with ID {categoryId} not found.");
+                    throw new KeyNotFoundException($"Category with ID {categoryId} not found.");
                 }
             }
         }
