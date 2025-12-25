@@ -1,0 +1,11 @@
+global using Xunit;
+global using NSubstitute;
+global using FluentAssertions;
+global using FileStorage.Domain.Entities;
+global using FileStorage.Domain.Enums;
+global using FileStorage.Application.DTOs;
+global using FileStorage.Application.Services;
+global using FileStorage.Application.Interfaces;
+global using FileStorage.Domain.Interfaces;
+global using Shared.DTOs;
+global using Microsoft.AspNetCore.Http;

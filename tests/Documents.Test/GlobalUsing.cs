@@ -1,0 +1,10 @@
+global using Xunit;
+global using NSubstitute;
+global using FluentAssertions;
+global using Domain.Entities;
+global using Application.DTOs.Document;
+global using Application.DTOs.Page;
+global using Application.DTOs.Category;
+global using Application.DTOs.Bookmark;
+global using Shared.DTOs;
+global using Microsoft.AspNetCore.Http;

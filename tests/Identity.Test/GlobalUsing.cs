@@ -1,0 +1,11 @@
+global using Xunit;
+global using NSubstitute;
+global using FluentAssertions;
+global using Domain.Entities;
+global using Domain.Enums;
+global using Domain.Interfaces;
+global using Application.DTOs;
+global using Application.Interfaces;
+global using Application.Services;
+global using Shared.DTOs;
+global using Microsoft.AspNetCore.Http;
