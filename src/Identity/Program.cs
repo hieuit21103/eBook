@@ -13,6 +13,9 @@ using Infrastructure.Services;
 using Microsoft.OpenApi;
 using Middleware;
 using MassTransit;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +40,9 @@ builder.Services.AddSwaggerGen(
 }
 );
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<LoginRequestValidator>();
 
 builder.Services.AddDbContext<ApplicationDbContext>(
     options =>

@@ -14,6 +14,9 @@ using IntegrationEvents;
 using Infrastructure.Services;
 using Microsoft.AspNetCore.SignalR;
 using Infrastructure.Hubs;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Application.Validators;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -38,6 +41,9 @@ builder.Services.AddSwaggerGen(
 }
 );
 builder.Services.AddControllers();
+builder.Services.AddFluentValidationAutoValidation()
+    .AddFluentValidationClientsideAdapters();
+builder.Services.AddValidatorsFromAssemblyContaining<DocumentCreateRequestValidator>();
 builder.Services.AddSignalR();
 
 builder.Services.AddDbContext<ApplicationDbContext>(
