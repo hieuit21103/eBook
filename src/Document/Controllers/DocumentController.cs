@@ -57,34 +57,8 @@ public class DocumentController : ControllerBase
     /// Example: GET /api/document?PageNumber=1&PageSize=10&UserId=123&Title=example&Topic=science&SortBy=Title&IsDescending=false
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult> GetAll(
-        [FromQuery] Guid? userId,
-        [FromQuery] string? keyword,
-        [FromQuery] string? title,
-        [FromQuery] string? topic,
-        [FromQuery] List<string>? categories,
-        [FromQuery] DateTime? createdAfter,
-        [FromQuery] DateTime? createdBefore,
-        [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] string sortBy = "CreatedAt",
-        [FromQuery] bool isDescending = true)
+    public async Task<ActionResult> GetAll([FromQuery] DocumentFilterParams filterParams)
     {
-        var filterParams = new DocumentFilterParams
-        {
-            UserId = userId,
-            Keyword = keyword,
-            Title = title,
-            Topic = topic,
-            Categories = categories,
-            CreatedAfter = createdAfter,
-            CreatedBefore = createdBefore,
-            PageNumber = pageNumber,
-            PageSize = pageSize,
-            SortBy = sortBy,
-            IsDescending = isDescending
-        };
-
         var result = await _documentService.GetAllAsync(filterParams);
         return Ok(
             new ApiResponse<PagedResult<DocumentResponse>>

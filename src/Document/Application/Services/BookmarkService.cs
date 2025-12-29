@@ -21,7 +21,7 @@ public class BookmarkService : IBookmarkService
         _pageRepository = pageRepository;
     }
 
-    public async Task<BookmarkResponse> AddBookmarkAsync(BookmarkCreateRequest request)
+    public async Task<BookmarkResponse> AddBookmarkAsync(string username, BookmarkCreateRequest request)
     {
         // Check if page exists
         var page = await _pageRepository.GetByIdWithDetailsAsync(request.PageId);
@@ -56,7 +56,7 @@ public class BookmarkService : IBookmarkService
 
         return new BookmarkResponse
         {
-            Username = "User", // TODO: Get from user service
+            Username = username,
             DocumentTitle = page.Document?.Title ?? "Unknown",
             DocumentTopic = page.Document?.Topic ?? "Unknown",
             CreatedAt = result.CreatedAt
@@ -83,7 +83,7 @@ public class BookmarkService : IBookmarkService
             b.PageId == pageId && b.UserId == userId);
     }
 
-    public async Task<PagedResult<BookmarkResponse>> GetBookmarkedDocumentsAsync(Guid userId, BookmarkFilterParams filterParams)
+    public async Task<PagedResult<BookmarkResponse>> GetBookmarkedDocumentsAsync(Guid userId, string username, BookmarkFilterParams filterParams)
     {
         // Set userId filter
         filterParams.UserId = userId;
@@ -92,7 +92,7 @@ public class BookmarkService : IBookmarkService
         
         var bookmarkResponses = pagedResult.Items.Select(b => new BookmarkResponse
         {
-            Username = "User", // TODO: Get from user service
+            Username = username,
             DocumentTitle = b.Page?.Document?.Title ?? "Unknown",
             DocumentTopic = b.Page?.Document?.Topic ?? "Unknown",
             CreatedAt = b.CreatedAt
@@ -108,13 +108,13 @@ public class BookmarkService : IBookmarkService
         };
     }
 
-    public async Task<PagedResult<BookmarkResponse>> GetAllBookmarksAsync(BookmarkFilterParams filterParams)
+    public async Task<PagedResult<BookmarkResponse>> GetAllBookmarksAsync(string username, BookmarkFilterParams filterParams)
     {
         var pagedResult = await _bookmarkRepository.GetPagedAsync(filterParams);
         
         var bookmarkResponses = pagedResult.Items.Select(b => new BookmarkResponse
         {
-            Username = "User", // TODO: Get from user service
+            Username = username,
             DocumentTitle = b.Page?.Document?.Title ?? "Unknown",
             DocumentTopic = b.Page?.Document?.Topic ?? "Unknown",
             CreatedAt = b.CreatedAt

@@ -41,28 +41,8 @@ public class CategoryController : ControllerBase
     /// Example: GET /api/category?PageNumber=1&PageSize=10&Name=Fiction&SortBy=Name&IsDescending=false
     /// </summary>
     [HttpGet]
-    public async Task<ActionResult> GetAll(
-        [FromQuery] string? keyword,
-        [FromQuery] string? name,
-        [FromQuery] DateTime? createdAfter,
-        [FromQuery] DateTime? createdBefore,
-        [FromQuery] int pageNumber = 1,
-        [FromQuery] int pageSize = 10,
-        [FromQuery] string sortBy = "CreatedAt",
-        [FromQuery] bool isDescending = false)
+    public async Task<ActionResult> GetAll([FromQuery] CategoryFilterParams filterParams)
     {
-        var filterParams = new CategoryFilterParams
-        {
-            Keyword = keyword,
-            Name = name,
-            CreatedAfter = createdAfter,
-            CreatedBefore = createdBefore,
-            PageNumber = pageNumber,
-            PageSize = pageSize,
-            SortBy = sortBy,
-            IsDescending = isDescending
-        };
-
         var result = await _categoryService.GetAllAsync(filterParams);
         return Ok(
             new ApiResponse<PagedResult<CategoryResponse>>
