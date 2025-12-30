@@ -17,7 +17,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 9.0.x
+        dotnet-version: 10.0.x
 
     - name: Restore
       run: dotnet restore
@@ -28,5 +28,14 @@ jobs:
     - name: Build
       run: dotnet build --no-restore -c Release
 
-    - name: Docker build
-      run: docker build -t demo-ci .
+    - name: Docker build document service
+      run: docker build -f ./src/Document/Dockerfile -t document-ci src
+
+    - name: Docker build identity service
+      run: docker build -f ./src/Identity/Dockerfile -t identity-ci src
+
+    - name: Docker build apigateway service
+      run: docker build -f ./src/ApiGateway/Dockerfile -t apigateway-ci src
+    
+    - name: Docker build filestorage service
+      run: docker build -f ./src/FileStorage/Dockerfile -t filestorage-ci src
