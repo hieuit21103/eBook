@@ -11,6 +11,7 @@ public class AddBookmarkAsyncTests : BookmarkServiceBase
     {
         // Arrange
         var userId = Guid.NewGuid();
+        var username = "testuser";
         var pageId = Guid.NewGuid();
         var documentId = Guid.NewGuid();
 
@@ -40,7 +41,7 @@ public class AddBookmarkAsyncTests : BookmarkServiceBase
         _bookmarkRepository.AddAsync(Arg.Any<Bookmark>()).Returns(savedBookmark);
 
         // Act
-        var result = await _bookmarkService.AddBookmarkAsync(request);
+        var result = await _bookmarkService.AddBookmarkAsync(username, request);
 
         // Assert
         result.Should().NotBeNull();
@@ -54,6 +55,7 @@ public class AddBookmarkAsyncTests : BookmarkServiceBase
     {
         // Arrange
         var userId = Guid.NewGuid();
+        var username = "testuser";
         var pageId = Guid.NewGuid();
 
         var request = new BookmarkCreateRequest
@@ -65,7 +67,7 @@ public class AddBookmarkAsyncTests : BookmarkServiceBase
         _pageRepository.GetByIdWithDetailsAsync(pageId).Returns((Page?)null);
 
         // Act
-        Func<Task> act = async () => await _bookmarkService.AddBookmarkAsync(request);
+        Func<Task> act = async () => await _bookmarkService.AddBookmarkAsync(username, request);
 
         // Assert
         await act.Should().ThrowAsync<KeyNotFoundException>()
@@ -77,6 +79,7 @@ public class AddBookmarkAsyncTests : BookmarkServiceBase
     {
         // Arrange
         var userId = Guid.NewGuid();
+        var username = "testuser";
         var pageId = Guid.NewGuid();
 
         var request = new BookmarkCreateRequest
@@ -91,7 +94,7 @@ public class AddBookmarkAsyncTests : BookmarkServiceBase
         _bookmarkRepository.FindAsync(Arg.Any<Expression<Func<Bookmark, bool>>>()).Returns(new List<Bookmark> { existingBookmark });
 
         // Act
-        Func<Task> act = async () => await _bookmarkService.AddBookmarkAsync(request);
+        Func<Task> act = async () => await _bookmarkService.AddBookmarkAsync(username, request);
 
         // Assert
         await act.Should().ThrowAsync<InvalidOperationException>()

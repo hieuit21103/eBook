@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Shared.DTOs;
 using Documents.Test.Controllers.Documents;
 
+namespace Documents.Test.Controllers.Documents;
 public class GetByIdWithDetailsTests : DocumentControllerBase
 {
     [Fact]

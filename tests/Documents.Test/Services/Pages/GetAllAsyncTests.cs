@@ -9,13 +9,19 @@ public class GetAllAsyncTests : PageServiceBase
     public async Task GetAllAsync_ShouldReturnPages_WhenExist()
     {
         // Arrange
-        var filterParams = new PageFilterParams { PageNumber = 1, PageSize = 10 };
+        var document1 = new Document { Id = Guid.NewGuid(), Title = "Doc A" };
+        var document2 = new Document { Id = Guid.NewGuid(), Title = "Doc B" };
+        var filterParams = new PageFilterParams { 
+            DocumentId = document1.Id,
+            SpecificPageNumber = 1,
+            PageNumber = 1, 
+            PageSize = 10 };
 
         var pages = new PagedResult<Page>
         {
             Items = new List<Page> {
-                new Page { Id = Guid.NewGuid(), PageNumber = 1, Document = new Document { Title = "Doc A" } },
-                new Page { Id = Guid.NewGuid(), PageNumber = 2, Document = new Document { Title = "Doc A" } }
+                new Page { Id = Guid.NewGuid(), PageNumber = 1, Document = document1 },
+                new Page { Id = Guid.NewGuid(), PageNumber = 2, Document = document2 }
             },
             TotalCount = 2,
             CurrentPage = 1,

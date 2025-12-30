@@ -10,6 +10,7 @@ public class GetUserBookmarksTests : BookmarkControllerBase
     {
         // Arrange
         var userId = Guid.NewGuid();
+        var username = "testuser";
         var pagedResult = new PagedResult<BookmarkResponse>
         {
             Items = new List<BookmarkResponse>
@@ -23,11 +24,11 @@ public class GetUserBookmarksTests : BookmarkControllerBase
             TotalPages = 1
         };
 
-        _bookmarkService.GetBookmarkedDocumentsAsync(userId, Arg.Any<BookmarkFilterParams>())
+        _bookmarkService.GetBookmarkedDocumentsAsync(userId, username, Arg.Any<BookmarkFilterParams>())
             .Returns(pagedResult);
 
         // Act
-        var result = await _bookmarkController.GetUserBookmarks(userId, null, null, null, null, null, 1, 10, "CreatedAt", true);
+        var result = await _bookmarkController.GetUserBookmarks(userId, new BookmarkFilterParams());
 
         // Assert
         var okResult = result as OkObjectResult;

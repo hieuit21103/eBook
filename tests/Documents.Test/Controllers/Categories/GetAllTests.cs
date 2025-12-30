@@ -26,7 +26,7 @@ public class GetAllTests : CategoryControllerBase
             .Returns(pagedResult);
 
         // Act
-        var result = await _categoryController.GetAll(null, null, null, null, 1, 10, "CreatedAt", false);
+        var result = await _categoryController.GetAll(new CategoryFilterParams());
 
         // Assert
         var okResult = result as OkObjectResult;

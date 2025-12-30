@@ -10,6 +10,7 @@ public class GetBookmarkedDocumentsAsyncTests : BookmarkServiceBase
     {
         // Arrange
         var userId = Guid.NewGuid();
+        var username = "testuser";
         var filterParams = new BookmarkFilterParams { PageNumber = 1, PageSize = 10 };
 
         var bookmarks = new PagedResult<Bookmark>
@@ -37,7 +38,7 @@ public class GetBookmarkedDocumentsAsyncTests : BookmarkServiceBase
             .Returns(bookmarks);
 
         // Act
-        var result = await _bookmarkService.GetBookmarkedDocumentsAsync(userId, filterParams);
+        var result = await _bookmarkService.GetBookmarkedDocumentsAsync(userId, username, filterParams);
 
         // Assert
         result.Should().NotBeNull();

@@ -26,7 +26,7 @@ public class GetAllBookmarksTests : BookmarkControllerBase
             .Returns(pagedResult);
 
         // Act
-        var result = await _bookmarkController.GetAllBookmarks(null, null, null, null, null, null, 1, 10, "CreatedAt", true);
+        var result = await _bookmarkController.GetAllBookmarks(new BookmarkFilterParams());
 
         // Assert
         var okResult = result as OkObjectResult;

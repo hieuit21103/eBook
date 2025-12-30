@@ -8,6 +8,7 @@ public class AddBookmarkTests : BookmarkControllerBase
     public async Task AddBookmark_ShouldReturnBookmarkResponse_WhenValidRequest()
     {
         // Arrange
+        var username = "testuser";
         var request = new BookmarkCreateRequest
         {
             PageId = Guid.NewGuid(),
@@ -22,7 +23,7 @@ public class AddBookmarkTests : BookmarkControllerBase
             CreatedAt = DateTime.UtcNow
         };
 
-        _bookmarkService.AddBookmarkAsync(Arg.Is<BookmarkCreateRequest>(r =>
+        _bookmarkService.AddBookmarkAsync(username, Arg.Is<BookmarkCreateRequest>(r =>
             r.PageId == request.PageId && r.UserId == request.UserId))
             .Returns(bookmarkResponse);
 

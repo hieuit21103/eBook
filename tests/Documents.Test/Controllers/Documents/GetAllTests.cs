@@ -28,7 +28,7 @@ public class GetAllTests : DocumentControllerBase
             .Returns(pagedResult);
 
         // Act
-        var result = await _documentController.GetAll(null, null, null, null, null, null, null, 1, 10, "CreatedAt", true);
+        var result = await _documentController.GetAll(new DocumentFilterParams());
 
         // Assert
         var okResult = result as OkObjectResult;

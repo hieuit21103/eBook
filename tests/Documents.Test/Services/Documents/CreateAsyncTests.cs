@@ -28,15 +28,16 @@ public class CreateAsyncTests : DocumentServiceBase
             TotalPages = 0,
             CreatedAt = DateTime.UtcNow,
             UpdatedAt = DateTime.UtcNow,
-            Categories = new List<DocumentCategory>
-            {
-                new DocumentCategory
-                {
-                    CategoryId = category.Id,
-                    Category = category
-                }
-            }
         };
+
+        savedDocument.Categories.Add(new DocumentCategory
+        {
+            Id = Guid.NewGuid(),
+            Document = savedDocument,
+            DocumentId = savedDocument.Id,
+            CategoryId = category.Id,
+            Category = category
+        });
 
         _categoryRepository.ExistsAsync(Arg.Any<Expression<Func<Category, bool>>>()).Returns(true);
 
