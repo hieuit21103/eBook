@@ -12,7 +12,7 @@ public class DeleteAllUserTokensAsyncTests : TokenServiceBase
         var userId = Guid.NewGuid();
         var endpoint = new DnsEndPoint("localhost", 6379);
         var server = Substitute.For<IServer>();
-        
+
         _redis.GetEndPoints().Returns(new EndPoint[] { endpoint });
         _redis.GetServer(endpoint).Returns(server);
 
@@ -33,7 +33,7 @@ public class DeleteAllUserTokensAsyncTests : TokenServiceBase
         // Assert
         // Should delete key 1
         await _database.Received(1).KeyDeleteAsync("rt:jti1");
-        
+
         // Should NOT delete key 2 or 3
         await _database.DidNotReceive().KeyDeleteAsync("rt:jti2");
         await _database.DidNotReceive().KeyDeleteAsync("rt:jti3");

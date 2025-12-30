@@ -17,7 +17,7 @@ public class GetPreviewByDocumentIdAndPageNumberTests : PageServiceBase
             DocumentId = documentId,
             PageNumber = pageNumber,
             FileId = fileId
-        };  
+        };
 
         _pageRepository.GetByDocumentIdAndPageNumberAsync(documentId, pageNumber)
             .Returns(page);

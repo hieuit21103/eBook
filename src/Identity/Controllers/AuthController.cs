@@ -40,13 +40,13 @@ public class AuthController : ControllerBase
             Expires = DateTimeOffset.UtcNow.AddDays(7)
         });
 
-        return Ok(new 
-        { 
-            accessToken = result.AccessToken, 
-            userId = result.UserId, 
-            username = result.Username, 
-            email = result.Email, 
-            role = result.Role 
+        return Ok(new
+        {
+            accessToken = result.AccessToken,
+            userId = result.UserId,
+            username = result.Username,
+            email = result.Email,
+            role = result.Role
         });
     }
 
@@ -69,13 +69,13 @@ public class AuthController : ControllerBase
             Expires = DateTimeOffset.UtcNow.AddDays(7)
         });
 
-        return Ok(new 
-        { 
-            accessToken = result.AccessToken, 
-            userId = result.UserId, 
-            username = result.Username, 
-            email = result.Email, 
-            role = result.Role 
+        return Ok(new
+        {
+            accessToken = result.AccessToken,
+            userId = result.UserId,
+            username = result.Username,
+            email = result.Email,
+            role = result.Role
         });
     }
 
@@ -125,9 +125,9 @@ public class AuthController : ControllerBase
 
         HttpContext.Response.Cookies.Delete("refreshToken");
 
-        return Ok(new 
-        { 
-            message = "Logged out successfully" 
+        return Ok(new
+        {
+            message = "Logged out successfully"
         });
     }
 

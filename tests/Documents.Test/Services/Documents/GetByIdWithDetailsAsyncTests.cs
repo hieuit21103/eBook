@@ -7,8 +7,9 @@ public class GetByIdWithDetailsAsyncTests : DocumentServiceBase
     {
         // Arrange
         var documentId = Guid.NewGuid();
-        var document = new Document { 
-            Id = documentId, 
+        var document = new Document
+        {
+            Id = documentId,
             Title = "Test Document",
             Topic = "Test Topic",
             CreatedAt = DateTime.UtcNow,
@@ -31,7 +32,7 @@ public class GetByIdWithDetailsAsyncTests : DocumentServiceBase
         };
 
         _documentRepository.GetByIdWithDetailsAsync(documentId).Returns(document);
-        
+
         // Act
         var result = await _documentService.GetByIdWithDetailsAsync(documentId);
 
@@ -45,7 +46,7 @@ public class GetByIdWithDetailsAsyncTests : DocumentServiceBase
     {
         var documentId = Guid.NewGuid();
         _documentRepository.GetByIdWithDetailsAsync(documentId).Returns((Document?)null);
-        
+
         // Act
         Func<Task> act = async () => await _documentService.GetByIdWithDetailsAsync(documentId);
 

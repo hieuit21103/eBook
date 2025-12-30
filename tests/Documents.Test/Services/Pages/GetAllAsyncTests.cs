@@ -11,11 +11,13 @@ public class GetAllAsyncTests : PageServiceBase
         // Arrange
         var document1 = new Document { Id = Guid.NewGuid(), Title = "Doc A" };
         var document2 = new Document { Id = Guid.NewGuid(), Title = "Doc B" };
-        var filterParams = new PageFilterParams { 
+        var filterParams = new PageFilterParams
+        {
             DocumentId = document1.Id,
             SpecificPageNumber = 1,
-            PageNumber = 1, 
-            PageSize = 10 };
+            PageNumber = 1,
+            PageSize = 10
+        };
 
         var pages = new PagedResult<Page>
         {

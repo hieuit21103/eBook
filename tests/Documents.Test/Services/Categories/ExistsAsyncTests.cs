@@ -1,7 +1,7 @@
 using System.Linq.Expressions;
 
 namespace Documents.Test.Services.Categories;
-    
+
 public class ExistsAsyncTests : CategoryServiceBase
 {
     [Fact]

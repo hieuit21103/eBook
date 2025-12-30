@@ -50,9 +50,9 @@ public class S3ServiceTests
 
         // Assert
         result.Should().Be(fileName);
-        await _s3Client.Received(1).PutObjectAsync(Arg.Is<PutObjectRequest>(r => 
-            r.BucketName == "test-bucket" && 
-            r.Key == fileName && 
+        await _s3Client.Received(1).PutObjectAsync(Arg.Is<PutObjectRequest>(r =>
+            r.BucketName == "test-bucket" &&
+            r.Key == fileName &&
             r.ContentType == contentType), Arg.Any<CancellationToken>());
     }
 
@@ -63,7 +63,7 @@ public class S3ServiceTests
         var s3Key = "test.txt";
         var content = "Hello World";
         var responseStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
-        
+
         var response = new GetObjectResponse
         {
             ResponseStream = responseStream,
@@ -97,8 +97,8 @@ public class S3ServiceTests
 
         // Assert
         result.Should().BeTrue();
-        await _s3Client.Received(1).DeleteObjectAsync(Arg.Is<DeleteObjectRequest>(r => 
-            r.BucketName == "test-bucket" && 
+        await _s3Client.Received(1).DeleteObjectAsync(Arg.Is<DeleteObjectRequest>(r =>
+            r.BucketName == "test-bucket" &&
             r.Key == s3Key), Arg.Any<CancellationToken>());
     }
 

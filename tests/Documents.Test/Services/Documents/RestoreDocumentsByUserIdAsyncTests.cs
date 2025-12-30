@@ -21,7 +21,7 @@ public class RestoreDocumentsByUserIdAsyncTests : DocumentServiceBase
         // Assert
         documents[0].IsDeleted.Should().BeFalse();
         await _documentRepository.Received(1).UpdateAsync(documents[0]);
-        
+
         await _documentRepository.DidNotReceive().UpdateAsync(documents[1]);
     }
 

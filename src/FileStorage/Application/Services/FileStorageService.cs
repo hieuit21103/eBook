@@ -96,7 +96,7 @@ public class FileStorageService : IFileStorageService
 
         // Delete from S3
         await _s3Service.DeleteFileAsync(metadata.FilePath);
-        
+
         // Delete from database
         await _fileMetadataRepository.DeleteAsync(fileId);
 
@@ -112,7 +112,7 @@ public class FileStorageService : IFileStorageService
         var url = await _s3Service.GetPresignedUrlAsync(metadata.FilePath);
         if (string.IsNullOrEmpty(url))
             throw new Exception("Failed to generate presigned URL");
-        
+
         return new PresignedUrlResponse
         {
             FileType = metadata.FileType,

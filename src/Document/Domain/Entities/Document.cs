@@ -1,6 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Entities;
+
 public class Document
 {
     public Guid Id { get; set; }

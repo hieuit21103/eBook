@@ -17,9 +17,9 @@ public class UserService : IUserService
     private readonly ILogger<UserService> _logger;
 
     public UserService(
-        IUserRepository userRepository, 
-        IPasswordService passwordService, 
-        IPublishEndpoint publishEndpoint, 
+        IUserRepository userRepository,
+        IPasswordService passwordService,
+        IPublishEndpoint publishEndpoint,
         ILogger<UserService> logger)
     {
         _userRepository = userRepository;
@@ -31,7 +31,7 @@ public class UserService : IUserService
     public async Task<PagedResult<UserResponse>> GetAllAsync(UserFilterParams filterParams)
     {
         var pagedUsers = await _userRepository.GetAllAsync(filterParams);
-        
+
         var userResponses = pagedUsers.Items.Select(u => new UserResponse
         {
             Id = u.Id,
@@ -111,7 +111,7 @@ public class UserService : IUserService
 
         if (!string.IsNullOrEmpty(request.Email) && user.Email != request.Email)
         {
-             if (await _userRepository.ExistsByEmailAsync(request.Email))
+            if (await _userRepository.ExistsByEmailAsync(request.Email))
             {
                 throw new Exception("Email already exists");
             }
@@ -120,7 +120,7 @@ public class UserService : IUserService
 
         if (!string.IsNullOrEmpty(request.Username) && user.Username != request.Username)
         {
-             if (await _userRepository.ExistsByUsernameAsync(request.Username))
+            if (await _userRepository.ExistsByUsernameAsync(request.Username))
             {
                 throw new Exception("Username already exists");
             }
@@ -170,7 +170,7 @@ public class UserService : IUserService
     {
         var user = await _userRepository.GetByIdAsync(id);
         if (user == null) return false;
-        
+
         user.IsActive = false;
         await _userRepository.UpdateAsync(user);
 

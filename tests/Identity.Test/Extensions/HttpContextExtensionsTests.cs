@@ -42,9 +42,9 @@ public class HttpContextExtensionsTests
         var context = new DefaultHttpContext();
         var jti = "test-jti";
         var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateJwtSecurityToken(subject: new System.Security.Claims.ClaimsIdentity(new[] 
-        { 
-            new System.Security.Claims.Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti, jti) 
+        var token = tokenHandler.CreateJwtSecurityToken(subject: new System.Security.Claims.ClaimsIdentity(new[]
+        {
+            new System.Security.Claims.Claim(System.IdentityModel.Tokens.Jwt.JwtRegisteredClaimNames.Jti, jti)
         }));
         var tokenString = tokenHandler.WriteToken(token);
         context.Request.Headers["Authorization"] = $"Bearer {tokenString}";
@@ -90,9 +90,9 @@ public class HttpContextExtensionsTests
         var context = new DefaultHttpContext();
         var userId = "test-user-id";
         var tokenHandler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
-        var token = tokenHandler.CreateJwtSecurityToken(subject: new System.Security.Claims.ClaimsIdentity(new[] 
-        { 
-            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, userId) 
+        var token = tokenHandler.CreateJwtSecurityToken(subject: new System.Security.Claims.ClaimsIdentity(new[]
+        {
+            new System.Security.Claims.Claim(System.Security.Claims.ClaimTypes.NameIdentifier, userId)
         }));
         var tokenString = tokenHandler.WriteToken(token);
         context.Request.Headers["Authorization"] = $"Bearer {tokenString}";

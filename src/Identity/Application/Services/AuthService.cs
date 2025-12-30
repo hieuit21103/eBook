@@ -15,8 +15,8 @@ public class AuthService : IAuthService
     private readonly IPasswordService _passwordService;
 
     public AuthService(
-        IUserRepository userRepository, 
-        ITokenService tokenService, 
+        IUserRepository userRepository,
+        ITokenService tokenService,
         IPasswordService passwordService)
     {
         _userRepository = userRepository;
@@ -58,7 +58,7 @@ public class AuthService : IAuthService
         );
 
         var jti = ExtractJtiFromToken(accessToken);
-        
+
         var refreshToken = _tokenService.GenerateRefreshToken(user.Id);
         await _tokenService.StoreRefreshTokenAsync(user.Id, jti, refreshToken);
 
@@ -90,7 +90,7 @@ public class AuthService : IAuthService
             throw new KeyNotFoundException("No user found with the provided username or email.");
         }
 
-        if(!_passwordService.VerifyPassword(request.Password, user.Password))
+        if (!_passwordService.VerifyPassword(request.Password, user.Password))
         {
             throw new AuthenticationFailureException("Invalid password.");
         }
@@ -113,7 +113,7 @@ public class AuthService : IAuthService
         );
 
         var jti = ExtractJtiFromToken(accessToken);
-        
+
         var refreshToken = _tokenService.GenerateRefreshToken(user.Id);
         await _tokenService.StoreRefreshTokenAsync(user.Id, jti, refreshToken);
 
@@ -166,7 +166,7 @@ public class AuthService : IAuthService
 
     public async Task LogoutAsync(string jti, string userId)
     {
-        if(string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(jti))
+        if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(jti))
         {
             throw new ArgumentException("Token invalid or missing.");
         }
@@ -176,7 +176,7 @@ public class AuthService : IAuthService
         {
             throw new KeyNotFoundException("User not found.");
         }
-        
+
         await _tokenService.DeleteRefreshTokenAsync(userId, jti);
     }
 

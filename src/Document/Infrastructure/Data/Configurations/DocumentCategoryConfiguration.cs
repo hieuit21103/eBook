@@ -21,6 +21,6 @@ public class DocumentCategoryConfiguration : IEntityTypeConfiguration<DocumentCa
                .WithMany(c => c.DocumentCategories)
                .HasForeignKey(dc => dc.CategoryId)
                .OnDelete(DeleteBehavior.Cascade);
-        
+
     }
 }

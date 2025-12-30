@@ -12,7 +12,7 @@ public class RefreshTokenTests : AuthControllerBase
         // Arrange
         var jti = "test_jti";
         var refreshToken = "test_refresh_token";
-        
+
         // Create a dummy JWT with JTI
         var tokenHandler = new JwtSecurityTokenHandler();
         var token = tokenHandler.CreateJwtSecurityToken(subject: new ClaimsIdentity(new[] { new Claim(JwtRegisteredClaimNames.Jti, jti) }));

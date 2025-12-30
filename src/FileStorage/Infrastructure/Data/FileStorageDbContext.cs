@@ -23,7 +23,7 @@ public class FileStorageDbContext : DbContext
             entity.Property(e => e.FilePath).IsRequired().HasMaxLength(500);
             entity.Property(e => e.CreatedAt).IsRequired();
             entity.Property(e => e.UpdatedAt).IsRequired();
-            
+
             entity.HasIndex(e => e.FilePath).IsUnique();
             entity.HasIndex(e => e.FileType);
             entity.HasIndex(e => e.CreatedAt);

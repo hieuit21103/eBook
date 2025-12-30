@@ -44,9 +44,9 @@ public class UpdateAsyncTests : UserServiceBase
         Assert.Equal(request.Username, result.Username);
         Assert.Equal(request.Role, result.Role);
         Assert.Equal(request.IsActive, result.IsActive);
-        
+
         await _userRepository.Received(1).UpdateAsync(user);
-        await _publishEndpoint.Received(1).Publish(Arg.Is<UserStatusChangedEvent>(e => 
+        await _publishEndpoint.Received(1).Publish(Arg.Is<UserStatusChangedEvent>(e =>
             e.UserId == userId && e.IsActive == false));
     }
 

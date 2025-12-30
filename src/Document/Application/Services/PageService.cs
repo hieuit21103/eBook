@@ -8,7 +8,7 @@ using Shared.DTOs;
 using Grpc.Core;
 using FileStorage.Protos;
 using Google.Protobuf;
-using MassTransit;  
+using MassTransit;
 using Shared;
 
 
@@ -90,7 +90,7 @@ public class PageService : IPageService
             throw new KeyNotFoundException(
                 $"Page number {pageNumber} not found for document ID {documentId}.");
         }
-        
+
         var response = _grpcClient.GetPresignedUrl(new FileRequest
         {
             Id = page.FileId.ToString(),
@@ -114,7 +114,7 @@ public class PageService : IPageService
                 $"Page with ID {id} not found.");
         }
 
-        if(page.FileId == null)
+        if (page.FileId == null)
         {
             throw new InvalidOperationException(
                 $"Page with ID {id} does not have associated file content.");
@@ -132,11 +132,13 @@ public class PageService : IPageService
 
         await foreach (var msg in call.ResponseStream.ReadAllAsync())
         {
-            if(msg.DataCase == FileDownloadResponse.DataOneofCase.Metadata){
+            if (msg.DataCase == FileDownloadResponse.DataOneofCase.Metadata)
+            {
                 fileName = msg.Metadata.FileName;
                 fileType = msg.Metadata.FileType.ToString();
             }
-            else if(msg.DataCase == FileDownloadResponse.DataOneofCase.ChunkData){
+            else if (msg.DataCase == FileDownloadResponse.DataOneofCase.ChunkData)
+            {
                 msg.ChunkData.WriteTo(memoryStream);
             }
         }
@@ -204,7 +206,7 @@ public class PageService : IPageService
         };
 
         var result = await _pageRepository.AddAsync(page);
-        
+
         if (result == null)
         {
             throw new Exception("Internal server error: Failed to create page.");
@@ -266,11 +268,11 @@ public class PageService : IPageService
         {
             var file = await UploadFileAsync(request.Content);
             var oldFileId = page.FileId;
-            
+
             page.FileId = Guid.Parse(file.Id);
-            
+
             // Delete old file publish event rabbit mq here
-            if(oldFileId != null)
+            if (oldFileId != null)
             {
                 await _publishEndpoint.Publish(new PageUpdatedEvent
                 {
@@ -318,7 +320,7 @@ public class PageService : IPageService
         await _notificationService.NotifyPageDeletedAsync(document.Id, page.Id);
 
         // Delete file publish event rabbit mq here
-        if(page.FileId != null)
+        if (page.FileId != null)
         {
             await _publishEndpoint.Publish(new PageDeletedEvent
             {

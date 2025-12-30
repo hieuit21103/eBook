@@ -4,6 +4,7 @@ using Application.DTOs;
 using Microsoft.AspNetCore.Authentication;
 
 namespace Middleware;
+
 public class GlobalExceptionHandler
 {
     private readonly RequestDelegate _next;
@@ -46,7 +47,7 @@ public class GlobalExceptionHandler
 
             List<string> errors = new List<string> { error?.Message ?? "Unknown error" };
             var result = JsonSerializer.Serialize(
-                new 
+                new
                 {
                     Success = false,
                     Message = "An error occurred while processing your request.",

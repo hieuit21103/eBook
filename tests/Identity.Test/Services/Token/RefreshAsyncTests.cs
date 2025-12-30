@@ -31,7 +31,7 @@ public class RefreshAsyncTests : TokenServiceBase
 
         // Verify old token deleted
         await _database.Received(1).KeyDeleteAsync($"rt:{oldJti}");
-        
+
         // Verify new token stored
         await _database.Received(1).StringSetAsync(
             Arg.Is<RedisKey>(k => k.ToString().StartsWith("rt:")),
@@ -46,7 +46,7 @@ public class RefreshAsyncTests : TokenServiceBase
         // Arrange
         var oldJti = "old_jti";
         var refreshToken = "invalid_token";
-        
+
         _database.StringGetAsync($"rt:{oldJti}").Returns(RedisValue.Null);
 
         // Act

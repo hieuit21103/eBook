@@ -41,7 +41,7 @@ public class DownloadContentAsyncTests : PageServiceBase
         mockStreamReader.MoveNext(Arg.Any<CancellationToken>())
             .Returns(async _ =>
             {
-                await Task.Yield(); 
+                await Task.Yield();
                 return iterator.MoveNext();
             });
 
@@ -54,7 +54,7 @@ public class DownloadContentAsyncTests : PageServiceBase
             getTrailersFunc: () => new Metadata(),
             disposeAction: () => { }
         );
-        
+
         _grpcClient.DownloadFile(
                 Arg.Any<FileRequest>(),
                 Arg.Any<Metadata>(),

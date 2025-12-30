@@ -16,7 +16,7 @@ public class AuthControllerBase
         _authService = Substitute.For<IAuthService>();
         _logger = Substitute.For<ILogger<AuthController>>();
         _controller = new AuthController(_authService, _logger);
-        
+
         _httpContext = new DefaultHttpContext();
         _controller.ControllerContext = new ControllerContext
         {

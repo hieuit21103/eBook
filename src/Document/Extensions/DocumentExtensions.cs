@@ -41,7 +41,7 @@ public static class DocumentExtensions
 
         if (filterParams.Categories != null && filterParams.Categories.Any())
         {
-            query = query.Where(d => d.Categories.Any(dc => 
+            query = query.Where(d => d.Categories.Any(dc =>
                 filterParams.Categories.Contains(dc.Category.Name)));
         }
 

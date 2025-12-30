@@ -24,10 +24,10 @@ public class LoginAsyncTests : AuthServiceBase
 
         _userRepository.GetByEmailAsync(request.UsernameOrEmail).Returns(user);
         _passwordService.VerifyPassword(request.Password, user.Password).Returns(true);
-        
+
         // Create a dummy JWT
         var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJqdGkiOiJqdGkifQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
-        
+
         _tokenService.GenerateAccessToken(user.Id, user.Username, user.Email, user.Role.ToString())
             .Returns(token);
         _tokenService.GenerateRefreshToken(user.Id).Returns("refreshToken");
@@ -60,7 +60,7 @@ public class LoginAsyncTests : AuthServiceBase
 
         _userRepository.GetByUsernameAsync(request.UsernameOrEmail).Returns(user);
         _passwordService.VerifyPassword(request.Password, user.Password).Returns(true);
-        
+
         // Create a dummy JWT
         var token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyLCJqdGkiOiJqdGkifQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
 

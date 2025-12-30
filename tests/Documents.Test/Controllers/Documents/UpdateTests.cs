@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 
 namespace Documents.Test.Controllers.Documents;
+
 public class UpdateTests : DocumentControllerBase
 {
     [Fact]

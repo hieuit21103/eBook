@@ -13,11 +13,11 @@ public class ApiResponse
 
     public static ApiResponse Fail(string message, List<string>? errors = null)
     {
-        return new ApiResponse 
-        { 
-            Success = false, 
-            Message = message, 
-            Errors = errors 
+        return new ApiResponse
+        {
+            Success = false,
+            Message = message,
+            Errors = errors
         };
     }
 }
@@ -28,11 +28,11 @@ public class ApiResponse<T> : ApiResponse
 
     public static ApiResponse<T> Ok(T data, string message = "Success")
     {
-        return new ApiResponse<T> 
-        { 
-            Success = true, 
-            Message = message, 
-            Data = data 
+        return new ApiResponse<T>
+        {
+            Success = true,
+            Message = message,
+            Data = data
         };
     }
 }

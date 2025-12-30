@@ -13,7 +13,7 @@ public static class HttpContextExtensions
     public static string? GetJtiFromAccessToken(this HttpContext context)
     {
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        
+
         if (string.IsNullOrEmpty(token))
             return null;
 
@@ -32,7 +32,7 @@ public static class HttpContextExtensions
     public static string? GetUserIdFromAccessToken(this HttpContext context)
     {
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        
+
         if (string.IsNullOrEmpty(token))
             return null;
 
@@ -51,7 +51,7 @@ public static class HttpContextExtensions
     public static Dictionary<string, string>? DecodeAccessToken(this HttpContext context)
     {
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        
+
         if (string.IsNullOrEmpty(token))
             return null;
 
@@ -59,7 +59,7 @@ public static class HttpContextExtensions
         {
             var handler = new JwtSecurityTokenHandler();
             var jwtToken = handler.ReadJwtToken(token);
-            
+
             return jwtToken.Claims.ToDictionary(
                 c => c.Type,
                 c => c.Value
@@ -74,7 +74,7 @@ public static class HttpContextExtensions
     public static string? GetClaimFromAccessToken(this HttpContext context, string claimType)
     {
         var token = context.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-        
+
         if (string.IsNullOrEmpty(token))
             return null;
 

@@ -51,10 +51,10 @@ public class DocumentExtensionsTests
         // Arrange
         var category1 = new Category { Id = Guid.NewGuid(), Name = "Tech" };
         var category2 = new Category { Id = Guid.NewGuid(), Name = "Life" };
-        
+
         var doc1 = new Document { Id = Guid.NewGuid(), Title = "Doc 1" };
         var doc2 = new Document { Id = Guid.NewGuid(), Title = "Doc 2" };
-        
+
         doc1.Categories = new List<DocumentCategory> { new DocumentCategory { CategoryId = category1.Id, Category = category1 } };
         doc2.Categories = new List<DocumentCategory> { new DocumentCategory { CategoryId = category2.Id, Category = category2 } };
 

@@ -4,6 +4,7 @@ using Application.DTOs;
 using Shared.DTOs;
 
 namespace Middleware;
+
 public class GlobalExceptionHandler
 {
     private readonly RequestDelegate _next;

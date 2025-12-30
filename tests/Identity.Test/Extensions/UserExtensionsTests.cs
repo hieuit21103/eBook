@@ -76,7 +76,7 @@ public class UserExtensionsTests
         result.Should().HaveCount(1);
         result.First().Username.Should().Be("charlie");
     }
-    
+
     [Fact]
     public void ApplyFilters_WhenNoFilters_ShouldReturnAll()
     {

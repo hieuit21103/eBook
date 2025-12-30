@@ -18,7 +18,7 @@ public class UserUpdateRequestValidator : AbstractValidator<UserUpdateRequest>
         RuleFor(x => x.Password)
             .MinimumLength(6).WithMessage("Password must be at least 6 characters.")
             .When(x => !string.IsNullOrEmpty(x.Password));
-            
+
         RuleFor(x => x.Role)
             .IsInEnum().WithMessage("Invalid role.")
             .When(x => x.Role.HasValue);

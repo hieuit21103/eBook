@@ -32,7 +32,7 @@ public class GlobalExceptionHandlerTests
         // Arrange
         var next = Substitute.For<RequestDelegate>();
         next.When(x => x.Invoke(Arg.Any<HttpContext>())).Do(x => throw exception);
-        
+
         var middleware = new GlobalExceptionHandler(next);
         var context = new DefaultHttpContext();
         context.Response.Body = new MemoryStream();
@@ -43,11 +43,11 @@ public class GlobalExceptionHandlerTests
         // Assert
         context.Response.StatusCode.Should().Be((int)expectedStatusCode);
         context.Response.ContentType.Should().Be("application/json");
-        
+
         context.Response.Body.Seek(0, SeekOrigin.Begin);
         var reader = new StreamReader(context.Response.Body);
         var responseBody = await reader.ReadToEndAsync();
-        
+
         responseBody.Should().Contain("\"Success\":false");
         responseBody.Should().Contain(exception.Message);
     }

@@ -26,7 +26,7 @@ public class BookmarkController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<BookmarkResponse>> AddBookmark([FromBody] BookmarkCreateRequest request)
     {
-        var username = User.GetUserName(); 
+        var username = User.GetUserName();
         var result = await _bookmarkService.AddBookmarkAsync(username, request);
         return Ok(
             new ApiResponse<BookmarkResponse>

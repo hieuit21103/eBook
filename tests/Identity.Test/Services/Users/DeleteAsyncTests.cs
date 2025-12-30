@@ -21,7 +21,7 @@ public class DeleteAsyncTests : UserServiceBase
         Assert.True(result);
         Assert.False(user.IsActive);
         await _userRepository.Received(1).UpdateAsync(user);
-        await _publishEndpoint.Received(1).Publish(Arg.Is<UserStatusChangedEvent>(e => 
+        await _publishEndpoint.Received(1).Publish(Arg.Is<UserStatusChangedEvent>(e =>
             e.UserId == userId && e.IsActive == false));
     }
 

@@ -46,9 +46,9 @@ builder.Services.AddRateLimiter(options =>
         opt.PermitLimit = 5;
         opt.Window = TimeSpan.FromSeconds(10);
         opt.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
-        opt.QueueLimit = 2; 
+        opt.QueueLimit = 2;
     });
-    
+
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
 });
 

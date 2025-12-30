@@ -31,9 +31,9 @@ public class BookmarkService : IBookmarkService
         }
 
         // Check if already bookmarked
-        var existing = await _bookmarkRepository.FindAsync(b => 
+        var existing = await _bookmarkRepository.FindAsync(b =>
             b.PageId == request.PageId && b.UserId == request.UserId);
-        
+
         if (existing.Any())
         {
             throw new InvalidOperationException("This page is already bookmarked by this user.");
@@ -48,7 +48,7 @@ public class BookmarkService : IBookmarkService
         };
 
         var result = await _bookmarkRepository.AddAsync(bookmark);
-        
+
         if (result == null)
         {
             throw new Exception("Failed to add bookmark.");
@@ -65,9 +65,9 @@ public class BookmarkService : IBookmarkService
 
     public async Task RemoveBookmarkAsync(Guid pageId, Guid userId)
     {
-        var bookmark = await _bookmarkRepository.FindAsync(b => 
+        var bookmark = await _bookmarkRepository.FindAsync(b =>
             b.PageId == pageId && b.UserId == userId);
-        
+
         var bookmarkToDelete = bookmark.FirstOrDefault();
         if (bookmarkToDelete == null)
         {
@@ -79,7 +79,7 @@ public class BookmarkService : IBookmarkService
 
     public async Task<bool> IsBookmarkedAsync(Guid pageId, Guid userId)
     {
-        return await _bookmarkRepository.ExistsAsync(b => 
+        return await _bookmarkRepository.ExistsAsync(b =>
             b.PageId == pageId && b.UserId == userId);
     }
 
@@ -87,9 +87,9 @@ public class BookmarkService : IBookmarkService
     {
         // Set userId filter
         filterParams.UserId = userId;
-        
+
         var pagedResult = await _bookmarkRepository.GetPagedAsync(filterParams);
-        
+
         var bookmarkResponses = pagedResult.Items.Select(b => new BookmarkResponse
         {
             Username = username,
@@ -111,7 +111,7 @@ public class BookmarkService : IBookmarkService
     public async Task<PagedResult<BookmarkResponse>> GetAllBookmarksAsync(BookmarkFilterParams filterParams)
     {
         var pagedResult = await _bookmarkRepository.GetPagedAsync(filterParams);
-        
+
         var bookmarkResponses = pagedResult.Items.Select(b => new BookmarkResponse
         {
             DocumentTitle = b.Page?.Document?.Title ?? "Unknown",

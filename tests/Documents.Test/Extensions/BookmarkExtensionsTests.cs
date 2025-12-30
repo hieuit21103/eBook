@@ -28,7 +28,7 @@ public class BookmarkExtensionsTests
         var doc2 = new Document { Id = Guid.NewGuid(), Title = "Cooking", Topic = "Food" };
         var page1 = new Page { Id = Guid.NewGuid(), DocumentId = doc1.Id, Document = doc1 };
         var page2 = new Page { Id = Guid.NewGuid(), DocumentId = doc2.Id, Document = doc2 };
-        
+
         var bookmark1 = new Bookmark { Id = Guid.NewGuid(), PageId = page1.Id, Page = page1 };
         var bookmark2 = new Bookmark { Id = Guid.NewGuid(), PageId = page2.Id, Page = page2 };
 
@@ -55,7 +55,7 @@ public class BookmarkExtensionsTests
         var userId = Guid.NewGuid();
         var doc = new Document { Id = Guid.NewGuid(), Title = "Doc", Topic = "Topic" };
         var page = new Page { Id = Guid.NewGuid(), DocumentId = doc.Id, Document = doc };
-        
+
         var bookmark1 = new Bookmark { Id = Guid.NewGuid(), UserId = userId, PageId = page.Id, Page = page };
         var bookmark2 = new Bookmark { Id = Guid.NewGuid(), UserId = Guid.NewGuid(), PageId = page.Id, Page = page };
 

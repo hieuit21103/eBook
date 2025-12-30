@@ -41,8 +41,8 @@ public class SignalRServiceTests
 
         // Assert
         _hubClients.Received(1).Group(groupName);
-        await _clientProxy.Received(1).SendCoreAsync("PageCreated", 
-            Arg.Is<object[]>(args => args.Length == 1 && args[0] != null && args[0].ToString()!.Contains(pageId.ToString())), 
+        await _clientProxy.Received(1).SendCoreAsync("PageCreated",
+            Arg.Is<object[]>(args => args.Length == 1 && args[0] != null && args[0].ToString()!.Contains(pageId.ToString())),
             Arg.Any<CancellationToken>());
     }
 
@@ -59,8 +59,8 @@ public class SignalRServiceTests
 
         // Assert
         _hubClients.Received(1).Group(groupName);
-        await _clientProxy.Received(1).SendCoreAsync("PageDeleted", 
-            Arg.Is<object[]>(args => args.Length == 1 && args[0] != null && args[0].ToString()!.Contains(pageId.ToString())), 
+        await _clientProxy.Received(1).SendCoreAsync("PageDeleted",
+            Arg.Is<object[]>(args => args.Length == 1 && args[0] != null && args[0].ToString()!.Contains(pageId.ToString())),
             Arg.Any<CancellationToken>());
     }
 
@@ -77,8 +77,8 @@ public class SignalRServiceTests
 
         // Assert
         _hubClients.Received(1).Group(groupName);
-        await _clientProxy.Received(1).SendCoreAsync("PageUpdated", 
-            Arg.Is<object[]>(args => args.Length == 1 && args[0] != null && args[0].ToString()!.Contains(pageId.ToString())), 
+        await _clientProxy.Received(1).SendCoreAsync("PageUpdated",
+            Arg.Is<object[]>(args => args.Length == 1 && args[0] != null && args[0].ToString()!.Contains(pageId.ToString())),
             Arg.Any<CancellationToken>());
     }
 }

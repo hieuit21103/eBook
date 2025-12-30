@@ -190,10 +190,10 @@ public class UpdateAsyncTests : PageServiceBase
 
         _pageRepository.GetByIdAsync(pageId).Returns(page);
         _documentRepository.GetByIdAsync(documentId).Returns(document);
-        
+
         _pageRepository.GetByDocumentIdAndPageNumberAsync(documentId, 2)
             .Returns(existingPage);
-            
+
         _pageRepository.GetPagesGreaterThanOrEqualToAsync(documentId, 2)
             .Returns(new List<Page> { existingPage, page3 });
 
@@ -250,7 +250,7 @@ public class UpdateAsyncTests : PageServiceBase
         var requestStream = Substitute.For<IClientStreamWriter<UploadFileRequest>>();
         requestStream.WriteAsync(Arg.Any<UploadFileRequest>()).Returns(Task.CompletedTask);
         requestStream.CompleteAsync().Returns(Task.CompletedTask);
-        
+
         var call = new AsyncClientStreamingCall<UploadFileRequest, FileUploadResponse>(
             requestStream,
             Task.FromResult(grpcResponse),

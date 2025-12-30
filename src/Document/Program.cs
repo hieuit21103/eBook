@@ -88,9 +88,9 @@ builder.Services.AddMassTransit(x =>
             h.Username(builder.Configuration["RabbitMQ:Username"] ?? "guest");
             h.Password(builder.Configuration["RabbitMQ:Password"] ?? "guest");
         });
-        cfg.UseMessageRetry(r => 
+        cfg.UseMessageRetry(r =>
             r.Interval(
-                builder.Configuration.GetValue<int?>("RabbitMQ:RetryCount") ?? 3, 
+                builder.Configuration.GetValue<int?>("RabbitMQ:RetryCount") ?? 3,
                 TimeSpan.FromSeconds(builder.Configuration.GetValue<int?>("RabbitMQ:RetryIntervalSeconds") ?? 10)));
         cfg.ConfigureEndpoints(context);
     });

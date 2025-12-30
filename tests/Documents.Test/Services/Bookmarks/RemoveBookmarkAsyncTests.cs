@@ -1,6 +1,7 @@
 using System.Linq.Expressions;
 
 namespace Documents.Test.Services.Bookmarks;
+
 public class RemoveBookmarkAsyncTests : BookmarkServiceBase
 {
     [Fact]

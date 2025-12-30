@@ -12,7 +12,7 @@ public class Repository<T> : IRepository<T> where T : class
     protected readonly DbSet<T> _dbSet;
 
     public Repository(ApplicationDbContext context)
-    { 
+    {
         _context = context;
         _dbSet = _context.Set<T>();
     }

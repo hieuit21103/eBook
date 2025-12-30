@@ -15,7 +15,7 @@ public class DocumentService : IDocumentService
     private readonly IDocumentCategoryRepository _documentCategoryRepository;
 
     public DocumentService(
-        IDocumentRepository documentRepository, 
+        IDocumentRepository documentRepository,
         ICategoryRepository categoryRepository,
         IDocumentCategoryRepository documentCategoryRepository)
     {
@@ -27,7 +27,7 @@ public class DocumentService : IDocumentService
     public async Task<DocumentResponse> GetByIdAsync(Guid id)
     {
         var document = await _documentRepository.GetByIdAsync(id);
-        
+
         if (document == null || document.IsDeleted)
         {
             throw new KeyNotFoundException($"Document with ID {id} not found.");
@@ -39,7 +39,7 @@ public class DocumentService : IDocumentService
     public async Task<DocumentResponse> GetByIdWithDetailsAsync(Guid id)
     {
         var document = await _documentRepository.GetByIdWithDetailsAsync(id);
-        
+
         if (document == null)
         {
             throw new KeyNotFoundException($"Document with ID {id} not found.");
@@ -51,7 +51,7 @@ public class DocumentService : IDocumentService
     public async Task<PagedResult<DocumentResponse>> GetAllAsync(DocumentFilterParams filterParams)
     {
         var pagedResult = await _documentRepository.GetPagedAsync(filterParams);
-        
+
         var documentResponses = pagedResult.Items.Select(MapToResponseWithDetails).ToList();
 
         return new PagedResult<DocumentResponse>
@@ -112,7 +112,7 @@ public class DocumentService : IDocumentService
     public async Task<DocumentResponse> UpdateAsync(Guid id, Guid userId, string role, DocumentUpdateRequest request)
     {
         var document = await _documentRepository.GetByIdWithDetailsAsync(id);
-        
+
         if (document == null)
         {
             throw new KeyNotFoundException($"Document with ID {id} not found.");
@@ -161,7 +161,7 @@ public class DocumentService : IDocumentService
     public async Task DeleteAsync(Guid id, Guid userId, string role)
     {
         var document = await _documentRepository.GetByIdAsync(id);
-        
+
         if (document == null || document.IsDeleted)
         {
             throw new KeyNotFoundException($"Document with ID {id} not found.");

@@ -2,6 +2,7 @@ using Domain.Entities;
 using Application.DTOs.Document;
 
 namespace Documents.Test.Services.Documents;
+
 public class GetByIdAsyncTests() : DocumentServiceBase
 {
 
@@ -10,8 +11,9 @@ public class GetByIdAsyncTests() : DocumentServiceBase
     {
         // Arrange
         var documentId = Guid.NewGuid();
-        var document = new Document { 
-            Id = documentId, 
+        var document = new Document
+        {
+            Id = documentId,
             Title = "Test Document",
             Topic = "Test Topic",
             CreatedAt = DateTime.UtcNow,
@@ -34,7 +36,7 @@ public class GetByIdAsyncTests() : DocumentServiceBase
         };
 
         _documentRepository.GetByIdAsync(documentId).Returns(document);
-        
+
         // Act
         var result = await _documentService.GetByIdAsync(documentId);
 
@@ -48,7 +50,7 @@ public class GetByIdAsyncTests() : DocumentServiceBase
     {
         var documentId = Guid.NewGuid();
         _documentRepository.GetByIdAsync(documentId).Returns((Document?)null);
-        
+
         // Act
         Func<Task> act = async () => await _documentService.GetByIdAsync(documentId);
 
@@ -61,13 +63,14 @@ public class GetByIdAsyncTests() : DocumentServiceBase
     public async Task GetByIdAsync_ShouldThrowException_WhenDocumentIsDeletedd()
     {
         var documentId = Guid.NewGuid();
-        var deletedDocument = new Document { 
-            Id = documentId, 
-            IsDeleted = true 
+        var deletedDocument = new Document
+        {
+            Id = documentId,
+            IsDeleted = true
         };
 
         _documentRepository.GetByIdAsync(documentId).Returns(deletedDocument);
-        
+
         // Act
         Func<Task> act = async () => await _documentService.GetByIdAsync(documentId);
 

@@ -32,7 +32,7 @@ public class DocumentCategoryRepository : Repository<DocumentCategory>, IDocumen
         var documentCategories = await _context.DocumentCategories
             .Where(dc => dc.DocumentId == documentId)
             .ToListAsync();
-        
+
         _context.DocumentCategories.RemoveRange(documentCategories);
         await _context.SaveChangesAsync();
     }

@@ -17,7 +17,7 @@ public static class BookmarkExtensions
                 b.Page.Document.Topic.ToLower().Contains(lowerKeyword)
             );
         }
-        
+
         if (filterParams.UserId.HasValue)
         {
             query = query.Where(b => b.UserId == filterParams.UserId.Value);

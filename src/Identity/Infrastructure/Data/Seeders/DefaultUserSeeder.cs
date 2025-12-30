@@ -19,7 +19,7 @@ namespace Infrastructure.Data.Seeders
             string adminEmail = "admin@example.com";
             string adminUsername = "admin";
             string adminPassword = "Password1!";
-            
+
             var existingAdmin = await userRepository.GetByEmailAsync(adminEmail);
             if (existingAdmin == null)
             {
@@ -40,7 +40,7 @@ namespace Infrastructure.Data.Seeders
             string userEmail = "user@example.com";
             string userUsername = "user";
             string userPassword = "Password1!";
-            
+
             var existingUser = await userRepository.GetByEmailAsync(userEmail);
             if (existingUser == null)
             {
@@ -58,4 +58,4 @@ namespace Infrastructure.Data.Seeders
             }
         }
     }
-}   
+}

@@ -28,5 +28,5 @@ public class DocumentHub : Hub
     {
         await base.OnDisconnectedAsync(exception);
     }
-    
+
 }

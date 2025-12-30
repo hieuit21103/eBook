@@ -74,7 +74,8 @@ public class PageController : ControllerBase
     // Preview a specific page by document ID and page number
     // </summary>
     [HttpGet("document/{documentId}/page/{pageNumber}/preview")]
-    public async Task<ActionResult<PagePreviewResponse>> GetPreviewByDocumentIdAndPageNumber(Guid documentId, int pageNumber){
+    public async Task<ActionResult<PagePreviewResponse>> GetPreviewByDocumentIdAndPageNumber(Guid documentId, int pageNumber)
+    {
         var result = await _pageService.GetPreviewByDocumentIdAndPageNumberAsync(documentId, pageNumber);
 
         return Ok(

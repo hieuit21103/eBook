@@ -20,7 +20,7 @@ public class CategoryService : ICategoryService
     public async Task<CategoryResponse> GetByIdAsync(Guid id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
-        
+
         if (category == null)
         {
             throw new KeyNotFoundException($"Category with ID {id} not found.");
@@ -32,7 +32,7 @@ public class CategoryService : ICategoryService
     public async Task<PagedResult<CategoryResponse>> GetAllAsync(CategoryFilterParams filterParams)
     {
         var pagedResult = await _categoryRepository.GetPagedAsync(filterParams);
-        
+
         var categoryResponses = pagedResult.Items.Select(MapToResponse).ToList();
 
         return new PagedResult<CategoryResponse>
@@ -69,7 +69,7 @@ public class CategoryService : ICategoryService
     public async Task<CategoryResponse> UpdateAsync(Guid id, CategoryUpdateRequest request)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
-        
+
         if (category == null)
         {
             throw new KeyNotFoundException($"Category with ID {id} not found.");
@@ -92,7 +92,7 @@ public class CategoryService : ICategoryService
     public async Task DeleteAsync(Guid id)
     {
         var category = await _categoryRepository.GetByIdAsync(id);
-        
+
         if (category == null)
         {
             throw new KeyNotFoundException($"Category with ID {id} not found.");

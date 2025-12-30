@@ -26,12 +26,13 @@ public class FileGrpcService : FileStorageService.FileStorageServiceBase
         while (await requestStream.MoveNext())
         {
             var message = requestStream.Current;
-            if(message.DataCase == UploadFileRequest.DataOneofCase.Metadata)
+            if (message.DataCase == UploadFileRequest.DataOneofCase.Metadata)
             {
                 fileName = message.Metadata.FileName;
                 contentType = message.Metadata.ContentType;
                 filePath = message.Metadata.FilePath;
-            }else if(message.DataCase == UploadFileRequest.DataOneofCase.ChunkData)
+            }
+            else if (message.DataCase == UploadFileRequest.DataOneofCase.ChunkData)
             {
                 var chunk = requestStream.Current.ChunkData;
                 if (chunk != null)
@@ -57,7 +58,7 @@ public class FileGrpcService : FileStorageService.FileStorageServiceBase
     public override async Task DownloadFile(FileRequest request, IServerStreamWriter<FileDownloadResponse> responseStream, ServerCallContext context)
     {
         if (!Guid.TryParse(request.Id, out var guid))
-             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID"));
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID"));
 
         var result = await _service.DownloadFileAsync(guid);
 
@@ -72,7 +73,7 @@ public class FileGrpcService : FileStorageService.FileStorageServiceBase
 
         using (result.FileStream)
         {
-            var buffer = new byte[4096]; 
+            var buffer = new byte[4096];
             int bytesRead;
             while ((bytesRead = await result.FileStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
             {
@@ -87,7 +88,7 @@ public class FileGrpcService : FileStorageService.FileStorageServiceBase
     public override async Task<FileMetadataResponse> GetFileMetadata(FileRequest request, ServerCallContext context)
     {
         if (!Guid.TryParse(request.Id, out var guid))
-             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID"));
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID"));
 
         var result = await _service.GetFileMetadataAsync(guid);
         if (result == null) throw new RpcException(new Status(StatusCode.NotFound, "File not found"));
@@ -106,7 +107,7 @@ public class FileGrpcService : FileStorageService.FileStorageServiceBase
     public override async Task<DeleteResponse> DeleteFile(FileRequest request, ServerCallContext context)
     {
         if (!Guid.TryParse(request.Id, out var guid))
-             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID"));
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID"));
 
         var success = await _service.DeleteFileAsync(guid);
         return new DeleteResponse { Success = success };
@@ -115,13 +116,13 @@ public class FileGrpcService : FileStorageService.FileStorageServiceBase
     public override async Task<UrlResponse> GetPresignedUrl(FileRequest request, ServerCallContext context)
     {
         if (!Guid.TryParse(request.Id, out var guid))
-             throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID"));
+            throw new RpcException(new Status(StatusCode.InvalidArgument, "Invalid GUID"));
 
         var response = await _service.GetPresignedUrlAsync(guid);
-        return new UrlResponse 
-        { 
-            FileType = (FileType)response.FileType, 
-            Url = response.Url 
+        return new UrlResponse
+        {
+            FileType = (FileType)response.FileType,
+            Url = response.Url
         };
     }
 }

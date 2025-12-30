@@ -28,11 +28,11 @@ builder.Services.AddDbContext<FileStorageDbContext>(options =>
     options.UseNpgsql(connectionString));
 
 // S3 Configuration
-var endpoint = builder.Configuration["S3:Endpoint"] 
+var endpoint = builder.Configuration["S3:Endpoint"]
     ?? throw new InvalidOperationException("S3 Endpoint is not configured");
-var accessKey = builder.Configuration["S3:AccessKey"] 
+var accessKey = builder.Configuration["S3:AccessKey"]
     ?? throw new InvalidOperationException("S3 Access Key is not configured");
-var secretKey = builder.Configuration["S3:SecretKey"] 
+var secretKey = builder.Configuration["S3:SecretKey"]
     ?? throw new InvalidOperationException("S3 Secret Key is not configured");
 
 var s3Config = new AmazonS3Config

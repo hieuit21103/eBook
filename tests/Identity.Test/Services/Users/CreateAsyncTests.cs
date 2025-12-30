@@ -28,10 +28,10 @@ public class CreateAsyncTests : UserServiceBase
         Assert.NotNull(result);
         Assert.Equal(request.Username, result.Username);
         Assert.Equal(request.Email, result.Email);
-        
-        await _userRepository.Received(1).AddAsync(Arg.Is<User>(u => 
-            u.Username == request.Username && 
-            u.Email == request.Email && 
+
+        await _userRepository.Received(1).AddAsync(Arg.Is<User>(u =>
+            u.Username == request.Username &&
+            u.Email == request.Email &&
             u.Password == "hashed_password"
         ));
     }
