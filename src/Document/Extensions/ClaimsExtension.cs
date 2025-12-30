@@ -16,4 +16,9 @@ public static class ClaimsExtensions
     {
         return user.FindFirstValue(ClaimTypes.Role) ?? "User";
     }
+
+    public static string GetUserName(this ClaimsPrincipal user)
+    {
+        return user.FindFirstValue(ClaimTypes.Name) ?? "Unknown";
+    }
 }

@@ -96,7 +96,7 @@ public class BookmarkController : ControllerBase
     public async Task<ActionResult> GetAllBookmarks([FromQuery] BookmarkFilterParams filterParams)
     {
         var username = User.GetUserName();
-        var result = await _bookmarkService.GetAllBookmarksAsync(username, filterParams);
+        var result = await _bookmarkService.GetAllBookmarksAsync(filterParams);
         return Ok(
             new ApiResponse<PagedResult<BookmarkResponse>>
             {

@@ -12,5 +12,5 @@ public interface IBookmarkService
     Task RemoveBookmarkAsync(Guid pageId, Guid userId);
     Task<bool> IsBookmarkedAsync(Guid pageId, Guid userId);
     Task<PagedResult<BookmarkResponse>> GetBookmarkedDocumentsAsync(Guid userId, string username, BookmarkFilterParams filterParams);
-    Task<PagedResult<BookmarkResponse>> GetAllBookmarksAsync(string username, BookmarkFilterParams filterParams);
+    Task<PagedResult<BookmarkResponse>> GetAllBookmarksAsync(BookmarkFilterParams filterParams);
 }
